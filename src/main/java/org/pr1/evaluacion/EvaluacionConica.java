@@ -81,7 +81,11 @@ public class EvaluacionConica implements Evaluacion {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (cobertura[row][col] > 0) {
-                    fitness++;
+                    if (ponderado) {
+                        fitness += grid[row][col];
+                    } else {
+                        fitness++;
+                    }
                 }
             }
         }

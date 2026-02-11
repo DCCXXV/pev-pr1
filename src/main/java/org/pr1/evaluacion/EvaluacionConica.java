@@ -3,20 +3,19 @@ package org.pr1.evaluacion;
 import org.pr1.Scene;
 import org.pr1.cromosomas.CromosomaReal;
 
-public class EvaluacionConica implements Evaluacion {
+public class EvaluacionConica {
 
-    private final int PENALIZACION = -100;
+    private static int PENALIZACION = -100;
 
-    private Scene s;
-    private CromosomaReal c;
+    private static Scene s;
+    private static CromosomaReal c;
 
     public EvaluacionConica(Scene s, CromosomaReal c) {
         this.s = s;
         this.c = c;
     }
 
-    @Override
-    public int evaluar() {
+    public static int evaluar() {
         double[] genes = c.getGenes();
         int numCamaras = c.getNumCamaras();
         double rango = c.getRangoVision();
@@ -100,7 +99,12 @@ public class EvaluacionConica implements Evaluacion {
      * 1. Precisión: 20 pasos por unidad de distancia (evita saltos).
      * 2. Anticlipping: Bloquea la visión si el rayo intenta pasar entre dos muros diagonales.
      */
-    private boolean lineaLibre(double x1, double y1, double x2, double y2) {
+    private static boolean lineaLibre(
+        double x1,
+        double y1,
+        double x2,
+        double y2
+    ) {
         // 1. Calcular distancia total
         double dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 

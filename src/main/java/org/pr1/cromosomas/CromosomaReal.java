@@ -1,17 +1,16 @@
 package org.pr1.cromosomas;
 
 import java.util.Random;
+import org.pr1.Scene;
 
 public class CromosomaReal {
 
     private double[] genes;
     private int numCamaras;
-    private int rows;
-    private int cols;
     private double rangoVision;
     private double anguloApertura;
     private boolean ponderado;
-    private int[][] grid;
+    private Scene scene;
 
     private static final int GENES_POR_CAMARA = 3; // x, y, theta
 
@@ -19,29 +18,31 @@ public class CromosomaReal {
 
     public CromosomaReal(
         int numCamaras,
-        int rows,
-        int cols,
+        Scene scene,
         double rangoVision,
         double anguloApertura,
-        int[][] grid,
-        boolean ponderado
     ) {
         this.numCamaras = numCamaras;
-        this.rows = rows;
-        this.cols = cols;
+        this.scene = scene;
         this.rangoVision = rangoVision;
         this.anguloApertura = anguloApertura;
-        this.grid = grid;
         this.ponderado = ponderado;
         this.genes = new double[numCamaras * GENES_POR_CAMARA];
         randomInit();
     }
 
+    public double[] getGenes() { return genes; }
+    public int getNumCamaras() { return numCamaras; }
+    public double getRangoVision() { return rangoVision; }
+    public double getAnguloApertura() { return anguloApertura; }
+    public boolean isPonderado() { return ponderado; }
+    public Scene getScene() { return scene; }
+
     private void randomInit() {
         for (int k = 0; k < numCamaras; k++) {
             int base = k * GENES_POR_CAMARA;
-            genes[base] = rng.nextDouble() * cols;
-            genes[base + 1] = rng.nextDouble() * rows;
+            genes[base] = rng.nextDouble() * scene.getCols();
+            genes[base + 1] = rng.nextDouble() * scene.getRows();
             genes[base + 2] = rng.nextDouble() * 360.0;
         }
     }

@@ -35,7 +35,6 @@ public class CromosomaReal {
         this.ponderado = ponderado;
         this.genes = new double[numCamaras * GENES_POR_CAMARA];
         randomInit();
-        // evaluar();
     }
 
     private void randomInit() {

@@ -21,7 +21,7 @@ public class EvaluacionConica implements Evaluacion {
         int numCamaras = c.getNumCamaras();
         double rango = c.getRangoVision();
         double apertura = c.getAnguloApertura();
-        boolean ponderado = c.isPonderado();
+        boolean ponderado = s.isPonderado();
 
         int rows = s.getRows();
         int cols = s.getCols();

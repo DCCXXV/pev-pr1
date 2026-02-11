@@ -3,7 +3,7 @@ package org.pr1.cromosomas;
 import java.util.Random;
 import org.pr1.Scene;
 
-public class CromosomaReal {
+public class CromosomaReal implements Cromosoma {
 
     private double[] genes;
     private int numCamaras;
@@ -31,6 +31,10 @@ public class CromosomaReal {
 
     public double[] getGenes() {
         return genes;
+    }
+
+    public void setGenes(double[] genes) {
+        this.genes = genes;
     }
 
     public int getNumCamaras() {

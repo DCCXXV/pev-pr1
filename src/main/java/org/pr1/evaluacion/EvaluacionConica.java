@@ -11,8 +11,8 @@ public class EvaluacionConica {
     private static CromosomaReal c;
 
     public EvaluacionConica(Scene s, CromosomaReal c) {
-        this.s = s;
-        this.c = c;
+        EvaluacionConica.s = s;
+        EvaluacionConica.c = c;
     }
 
     public static int evaluar() {
@@ -28,6 +28,8 @@ public class EvaluacionConica {
 
         int[][] cobertura = new int[rows][cols];
 
+        int penalizacionAcumulada = 0;
+
         for (int k = 0; k < numCamaras; k++) {
             int base = k * 3;
             double camX = genes[base];
@@ -37,14 +39,10 @@ public class EvaluacionConica {
             int celdaCamX = (int) camX;
             int celdaCamY = (int) camY;
             if (
-                (celdaCamX >= 0 &&
-                    celdaCamX < cols &&
-                    celdaCamY >= 0 &&
-                    celdaCamY < rows &&
-                    (ponderado && grid[celdaCamY][celdaCamX] == 0)) ||
+                (ponderado && grid[celdaCamY][celdaCamX] == 0) ||
                 (!ponderado && grid[celdaCamY][celdaCamX] == 1)
             ) {
-                return PENALIZACION;
+                penalizacionAcumulada += PENALIZACION;
             }
 
             for (int row = 0; row < rows; row++) {
@@ -88,7 +86,7 @@ public class EvaluacionConica {
                 }
             }
         }
-        return fitness;
+        return fitness - penalizacionAcumulada;
     }
 
     /**

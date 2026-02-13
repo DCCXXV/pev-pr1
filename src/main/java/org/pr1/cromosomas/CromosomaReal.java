@@ -30,6 +30,14 @@ public class CromosomaReal implements Cromosoma {
         randomInit();
     }
 
+    private CromosomaReal(CromosomaReal other) {
+        this.numCamaras = other.numCamaras;
+        this.scene = other.scene;
+        this.rangoVision = other.rangoVision;
+        this.anguloApertura = other.anguloApertura;
+        this.genes = other.genes.clone();
+    }
+
     public double[] getGenes() {
         return genes;
     }
@@ -65,5 +73,9 @@ public class CromosomaReal implements Cromosoma {
 
     public int evaluar() {
         return EvaluacionConica.evaluar(scene, this);
+    }
+
+    public CromosomaReal copia() {
+        return new CromosomaReal(this);
     }
 }

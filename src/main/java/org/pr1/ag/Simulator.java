@@ -1,5 +1,6 @@
 package org.pr1.ag;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import org.pr1.ag.cruce.Cruce;
 import org.pr1.ag.mutacion.Mutacion;
@@ -24,6 +25,9 @@ public class Simulator {
     private Supplier<Cromosoma> factoriaCromosomas;
     private int[] fitness;
 
+    private Cromosoma[] elite;
+    private int[] fitnessElite;
+
     public Simulator(
         int maxGeneraciones,
         int tamPoblacion,
@@ -37,11 +41,11 @@ public class Simulator {
         iniciarPoblacion();
         evaluarPoblacion();
         while (this.generacionActual < this.maxGeneraciones) {
-            //     generaElite();
+            generaElite();
             //     seleccion.seleccionar(poblacion, fitness);
             //     cruce con probCruce
             //     mutacion con probMutacion
-            //     introducirElite();
+            introducirElite();
             evaluarPoblacion();
             //     generacionActual++;
         }
@@ -58,6 +62,38 @@ public class Simulator {
         fitness = new int[tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++) {
             fitness[i] = poblacion[i].evaluar();
+        }
+    }
+
+    private void generaElite() {
+        int[][] paresFitness = new int[tamPoblacion][2];
+        for (int i = 0; i < tamPoblacion; i++) {
+            paresFitness[i][0] = i;
+            paresFitness[i][1] = fitness[i];
+        }
+        Arrays.sort(paresFitness, (a, b) -> Integer.compare(b[1], a[1]));
+
+        elite = new Cromosoma[elitismo];
+        fitnessElite = new int[elitismo];
+        for (int i = 0; i < elitismo; i++) {
+            int idx = paresFitness[i][0];
+            elite[i] = poblacion[idx].copia();
+            fitnessElite[i] = fitness[idx];
+        }
+    }
+
+    private void introducirElite() {
+        int[][] paresFitness = new int[tamPoblacion][2];
+        for (int i = 0; i < tamPoblacion; i++) {
+            paresFitness[i][0] = i;
+            paresFitness[i][1] = fitness[i];
+        }
+        Arrays.sort(paresFitness, (a, b) -> Integer.compare(a[1], b[1]));
+
+        for (int i = 0; i < elitismo; i++) {
+            int idx = paresFitness[i][0];
+            poblacion[idx] = elite[i];
+            fitness[idx] = fitnessElite[i];
         }
     }
 }

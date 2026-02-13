@@ -78,4 +78,15 @@ public class CromosomaReal implements Cromosoma {
     public CromosomaReal copia() {
         return new CromosomaReal(this);
     }
+
+    // devuelve el valor máximo válido del gen
+    public double getMax(int gen) {
+        int tipo = gen % GENES_POR_CAMARA;
+        return switch (tipo) {
+            case 0 -> scene.getCols();
+            case 1 -> scene.getRows();
+            case 2 -> 360.0;
+            default -> throw new IllegalArgumentException();
+        };
+    }
 }

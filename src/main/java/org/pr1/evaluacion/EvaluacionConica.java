@@ -7,15 +7,7 @@ public class EvaluacionConica {
 
     private static int PENALIZACION = -100;
 
-    private static Scene s;
-    private static CromosomaReal c;
-
-    public EvaluacionConica(Scene s, CromosomaReal c) {
-        EvaluacionConica.s = s;
-        EvaluacionConica.c = c;
-    }
-
-    public static int evaluar() {
+    public static int evaluar(Scene s, CromosomaReal c) {
         double[] genes = c.getGenes();
         int numCamaras = c.getNumCamaras();
         double rango = c.getRangoVision();
@@ -67,7 +59,7 @@ public class EvaluacionConica {
                     if (diff > 180) diff = 360 - diff;
                     if (diff > apertura / 2.0) continue;
 
-                    if (!lineaLibre(camX, camY, celdaX, celdaY)) continue;
+                    if (!lineaLibre(camX, camY, celdaX, celdaY, s, c)) continue;
 
                     cobertura[row][col]++;
                 }
@@ -101,7 +93,9 @@ public class EvaluacionConica {
         double x1,
         double y1,
         double x2,
-        double y2
+        double y2,
+        Scene s,
+        CromosomaReal c
     ) {
         // 1. Calcular distancia total
         double dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

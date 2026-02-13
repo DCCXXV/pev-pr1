@@ -2,6 +2,7 @@ package org.pr1.cromosomas;
 
 import java.util.Random;
 import org.pr1.Scene;
+import org.pr1.evaluacion.EvaluacionConica;
 
 public class CromosomaReal implements Cromosoma {
 
@@ -60,5 +61,9 @@ public class CromosomaReal implements Cromosoma {
             genes[base + 1] = rng.nextDouble() * scene.getRows();
             genes[base + 2] = rng.nextDouble() * 360.0;
         }
+    }
+
+    public int evaluar() {
+        return EvaluacionConica.evaluar(scene, this);
     }
 }

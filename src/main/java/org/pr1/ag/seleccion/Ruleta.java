@@ -4,8 +4,9 @@ import org.pr1.cromosomas.Cromosoma;
 
 import java.util.Random;
 
-public class Ruleta implements Seleccion{
+public class Ruleta implements Seleccion {
     @Override
+    //TODO usar copia
     public Cromosoma[] seleccionar(Cromosoma[] poblacion, int[] fitness) {
         int min = Integer.MAX_VALUE;
         for (int fit :  fitness) {
@@ -37,6 +38,7 @@ public class Ruleta implements Seleccion{
         //se saca la nueva poblacion
         Cromosoma nuevaPoblacion[] = new Cromosoma[poblacion.length];
         for (int i = 0; i < poblacion.length; i++) {
+
             //se saca un random de 0 a 1
             Random rand = new Random();
             double random = rand.nextDouble();
@@ -44,11 +46,12 @@ public class Ruleta implements Seleccion{
 
             //se va sumando las puntuacion y cuando el random pase a ser menor significa que
             //que entra en el rango de la ultima puntuacion sumada
-            for (int j = 0; j < puntuacion.length; j++) {
+            int j = 0;
+            while (random > acumulado) {
                 acumulado += puntuacion[j];
-                if (random < acumulado)
-                    nuevaPoblacion[i] = poblacion[j];
+                j++;
             }
+            nuevaPoblacion[i] = poblacion[j];
         }
 
         return nuevaPoblacion;

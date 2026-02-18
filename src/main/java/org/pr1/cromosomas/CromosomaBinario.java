@@ -5,6 +5,7 @@ import org.pr1.evaluacion.EvaluacionBinaria;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CromosomaBinario implements Cromosoma {
     /*
@@ -16,15 +17,14 @@ public class CromosomaBinario implements Cromosoma {
     private boolean[][] cromosoma;
     private Scene scene;
     private int numCamaras;
-    private int evaluacion;
 
-    CromosomaBinario(int numCamaras, Scene scene) {
+    public CromosomaBinario(int numCamaras, Scene scene) {
         //se coloca la escena y las camaras
         this.scene = scene;
         this.numCamaras = numCamaras;
 
         //se crea el array del cromosoma
-        boolean[][] matriz = new boolean[numCamaras * 2][];
+        this.cromosoma = new boolean[numCamaras * 2][];
 
         //saca el numero de bits necesarios para la longitud x
         double logBase2X = Math.log(scene.getCols()) / Math.log(2);
@@ -35,15 +35,59 @@ public class CromosomaBinario implements Cromosoma {
         int bitsY = (int) Math.ceil(logBase2Y);
 
         //se itera creando los genes con sus respectivas cantidades de bits
-        for (int i = 0; i <= numCamaras; i++) {
+        for (int i = 0; i < numCamaras; i++) {
             this.cromosoma[i * 2] = new boolean[bitsX];
             this.cromosoma[i * 2 + 1] = new boolean[bitsY];
         }
 
-        this.evaluacion = EvaluacionBinaria.evaluar(this);
+        //se vuelve a iterar por los genes para darles unos valores
+        Random rand = new Random();
+        for (int i = 0; i < numCamaras; i++) {
+            int j = bitsX - 1;
+            int numero = rand.nextInt(scene.getCols());
+            while (numero > 0) {
+                this.cromosoma[i * 2][j] = numero % 2 != 0;
+                numero = numero / 2;
+                j--;
+            }
+            j = bitsY - 1;
+            numero = rand.nextInt(scene.getRows());
+            while (numero > 0) {
+                this.cromosoma[i * 2 + 1][j] = numero % 2 != 0;
+                numero = numero / 2;
+                j--;
+            }
+        }
     }
 
-    public int evaluar() {return evaluacion;}
+    public CromosomaBinario(CromosomaBinario c) {
+        this.cromosoma = new boolean[c.getCromosoma().length][];
+        for (int i = 0; i < c.getCromosoma().length; i++) {
+            this.cromosoma[i] = new boolean[c.getCromosoma()[i].length];
+            for (int j = 0; j < c.getCromosoma()[i].length; j++) {
+                this.cromosoma[i][j] = c.getCromosoma()[i][j];
+            }
+        }
+        this.scene = c.getScene();
+        this.numCamaras = c.getNumCamaras();
+    }
+
+    public int evaluar() {
+        return EvaluacionBinaria.evaluar(this);
+    }
+
+    @Override
+    public Cromosoma copia() {
+        return new CromosomaBinario(this);
+    }
+
+    public boolean[][] getGenes() {
+        return cromosoma;
+    }
+
+    public void setGenes(boolean[][] genes) {
+        this.cromosoma = genes;
+    }
 
     public boolean[][] getCromosoma() {return cromosoma;}
     public Scene getScene() {return scene;}

@@ -74,7 +74,11 @@ public class EvaluacionBinaria{
     eje con 0 para X y 1 para Y
     avance con -1 para hacia atras y 1 hacia delante
      */
-    private static int avanzar(Scene scene, int[] baldosa, int eje, int avance) {
+    private static int avanzar(Scene scene, int[] pos, int eje, int avance) {
+        //variable auxiliar para no modificar la posicion original
+        int baldosa[] = new int[]{pos[0], pos[1]};
+        baldosa[eje] += avance;
+
         //limte al avanzar hacia delante
         int limiteHaciaDelante = 0;
 
@@ -88,7 +92,7 @@ public class EvaluacionBinaria{
         int puntuacion = 0;
 
         //si se ha salido de los limites para
-        while (baldosa[eje] > 0 && baldosa[eje] < limiteHaciaDelante) {
+        while (baldosa[eje] >= 0 && baldosa[eje] < limiteHaciaDelante) {
             //si no es ponderado y hay un 1 es una columna
             if (!scene.isPonderado() && scene.getGrid()[baldosa[1]][baldosa[0]] == 1)
                 break;

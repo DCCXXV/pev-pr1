@@ -1,9 +1,8 @@
 package org.pr1.ag.mutacion;
 
+import java.util.Random;
 import org.pr1.cromosomas.Cromosoma;
 import org.pr1.cromosomas.CromosomaReal;
-
-import java.util.Random;
 
 public class MutacionGen implements Mutacion {
 

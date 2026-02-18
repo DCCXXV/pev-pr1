@@ -1,6 +1,8 @@
 package org.pr1.ag;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Supplier;
 import org.pr1.ag.cruce.Cruce;
 import org.pr1.ag.mutacion.Mutacion;
@@ -32,6 +34,7 @@ public class Simulator {
         int maxGeneraciones,
         int tamPoblacion,
         Seleccion seleccion,
+        Cruce cruce,
         Mutacion mutacion,
         Supplier<Cromosoma> factoriaCromosomas
     ) {
@@ -40,6 +43,7 @@ public class Simulator {
         this.factoriaCromosomas = factoriaCromosomas;
         this.generacionActual = 0;
 
+        this.cruce = cruce;
         this.mutacion = mutacion;
 
         iniciarPoblacion();
@@ -47,11 +51,11 @@ public class Simulator {
         while (this.generacionActual < this.maxGeneraciones) {
             generaElite();
             poblacion = seleccion.seleccionar(poblacion, fitness);
-            //     cruce con probCruce
+            cruce(probCruce);
             mutacion(probMutacion);
             introducirElite();
             evaluarPoblacion();
-            //     generacionActual++;
+            generacionActual++;
         }
     }
 
@@ -83,6 +87,28 @@ public class Simulator {
             int idx = paresFitness[i][0];
             elite[i] = poblacion[idx].copia();
             fitnessElite[i] = fitness[idx];
+        }
+    }
+
+    private void cruce(double probCruce) {
+        Random rng = new Random();
+        // seleccionar individuos cuyo random < probCruce
+        ArrayList<Integer> seleccionados = new ArrayList<>();
+        for (int i = 0; i < tamPoblacion; i++) {
+            if (rng.nextDouble() < probCruce) {
+                seleccionados.add(i);
+            }
+        }
+        // si hay número impar, quitar el último
+        if (seleccionados.size() % 2 != 0) {
+            seleccionados.remove(seleccionados.size() - 1);
+        }
+        // emparejar de dos en dos y cruzar
+        for (int i = 0; i < seleccionados.size(); i += 2) {
+            cruce.cruzar(
+                poblacion[seleccionados.get(i)],
+                poblacion[seleccionados.get(i + 1)]
+            );
         }
     }
 

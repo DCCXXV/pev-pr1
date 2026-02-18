@@ -9,14 +9,16 @@ public class MutacionGen implements Mutacion {
     private Random rng = new Random();
 
     @Override
-    public void mutar(Cromosoma cromosoma) {
+    public void mutar(Cromosoma cromosoma, double probMutacion) {
         CromosomaReal c = (CromosomaReal) cromosoma;
         double[] genes = c.getGenes();
-        // elegir gen aleatoriamente
-        int gen = rng.nextInt(genes.length);
-        // conseguir su máximo
-        double limiteMax = c.getMax(gen);
-        // generar valor aleatorio dentro del rango de este gen (0, limiteMax)
-        genes[gen] = rng.nextDouble() * limiteMax;
+
+        for (int i = 0; i < genes.length; i++) {
+            if (rng.nextDouble() < probMutacion) {
+                // generar valor aleatorio dentro del rango de este gen (0, limiteMax)
+                double limiteMax = c.getMax(i);
+                genes[i] = rng.nextDouble() * limiteMax;
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ public class Simulator {
     private int maxGeneraciones;
     private int generacionActual;
 
-    //private Seleccion seleccion;
+    private Seleccion seleccion;
     private Cruce cruce;
     private Mutacion mutacion;
 
@@ -33,6 +33,9 @@ public class Simulator {
     public Simulator(
         int maxGeneraciones,
         int tamPoblacion,
+        double probCruce,
+        double probMutacion,
+        int elitismo,
         Seleccion seleccion,
         Cruce cruce,
         Mutacion mutacion,
@@ -40,9 +43,13 @@ public class Simulator {
     ) {
         this.maxGeneraciones = maxGeneraciones;
         this.tamPoblacion = tamPoblacion;
+        this.probCruce = probCruce;
+        this.probMutacion = probMutacion;
+        this.elitismo = elitismo;
         this.factoriaCromosomas = factoriaCromosomas;
         this.generacionActual = 0;
 
+        this.seleccion = seleccion;
         this.cruce = cruce;
         this.mutacion = mutacion;
 

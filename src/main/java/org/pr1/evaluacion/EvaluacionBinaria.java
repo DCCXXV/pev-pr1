@@ -3,7 +3,8 @@ package org.pr1.evaluacion;
 import org.pr1.Scene;
 import org.pr1.cromosomas.CromosomaBinario;
 
-public class EvaluacionBinaria{
+public class EvaluacionBinaria {
+
     //DATOS
     static boolean[][] visited;
 
@@ -22,12 +23,18 @@ public class EvaluacionBinaria{
         int numeroCamaras = cromosoma.getNumCamaras();
         boolean[][] datos = cromosoma.getCromosoma();
         for (int i = 0; i < numeroCamaras; i++) {
-            //parsea la posicion en binario a entero
-            int posX = parsearBinario(datos[i * 2]);
-            int posY = parsearBinario(datos[i * 2 + 1]);
+            //parsea la posicion en binario a entero, trunca al rango valido
+            int posX = Math.min(
+                parsearBinario(datos[i * 2]),
+                scene.getCols() - 1
+            );
+            int posY = Math.min(
+                parsearBinario(datos[i * 2 + 1]),
+                scene.getRows() - 1
+            );
 
             //posicion de la camara
-            int[] pos = new int[]{posX, posY};
+            int[] pos = new int[] { posX, posY };
 
             //se mira si la camara esta en una columna
             int baldosa = scene.getGrid()[posY][posX];
@@ -76,17 +83,15 @@ public class EvaluacionBinaria{
      */
     private static int avanzar(Scene scene, int[] pos, int eje, int avance) {
         //variable auxiliar para no modificar la posicion original
-        int baldosa[] = new int[]{pos[0], pos[1]};
+        int baldosa[] = new int[] { pos[0], pos[1] };
         baldosa[eje] += avance;
 
         //limte al avanzar hacia delante
         int limiteHaciaDelante = 0;
 
         //valor dependiendo del eje
-        if (eje == 0)
-            limiteHaciaDelante = scene.getCols();
-        else if (eje == 1)
-            limiteHaciaDelante = scene.getRows();
+        if (eje == 0) limiteHaciaDelante = scene.getCols();
+        else if (eje == 1) limiteHaciaDelante = scene.getRows();
 
         //baldosas iluminadas que no estaban ya iluminadas
         int puntuacion = 0;
@@ -94,19 +99,21 @@ public class EvaluacionBinaria{
         //si se ha salido de los limites para
         while (baldosa[eje] >= 0 && baldosa[eje] < limiteHaciaDelante) {
             //si no es ponderado y hay un 1 es una columna
-            if (!scene.isPonderado() && scene.getGrid()[baldosa[1]][baldosa[0]] == 1)
-                break;
+            if (
+                !scene.isPonderado() &&
+                scene.getGrid()[baldosa[1]][baldosa[0]] == 1
+            ) break;
             //si es ponderado y hay un 0 es una columna
-            if (scene.isPonderado() && scene.getGrid()[baldosa[1]][baldosa[0]] == 0)
-                break;
+            if (
+                scene.isPonderado() &&
+                scene.getGrid()[baldosa[1]][baldosa[0]] == 0
+            ) break;
 
             //si no se ha visitado ya la balsdosa se suma la puntuacion
             if (!visited[baldosa[1]][baldosa[0]]) {
                 //si no es ponderado se suma 1
-                if (!scene.isPonderado())
-                    puntuacion++;
-                else
-                    puntuacion += scene.getGrid()[baldosa[0]][baldosa[1]];
+                if (!scene.isPonderado()) puntuacion++;
+                else puntuacion += scene.getGrid()[baldosa[0]][baldosa[1]];
             }
             visited[baldosa[1]][baldosa[0]] = true;
 

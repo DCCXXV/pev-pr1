@@ -1,15 +1,14 @@
 package org.pr1.ag.seleccion;
 
+import java.util.Random;
 import org.pr1.cromosomas.Cromosoma;
 
-import java.util.Random;
-
 public class Ruleta implements Seleccion {
+
     @Override
-    //TODO usar copia
     public Cromosoma[] seleccionar(Cromosoma[] poblacion, int[] fitness) {
         int min = Integer.MAX_VALUE;
-        for (int fit :  fitness) {
+        for (int fit : fitness) {
             if (fit < min) {
                 min = fit;
             }
@@ -18,13 +17,11 @@ public class Ruleta implements Seleccion {
 
         //ajusta los fitness para que los negativos sean 0
         //y aprovecha y saca el acumulado
-        int total  = 0;
+        int total = 0;
         int fitnessAjustado[] = new int[fitness.length];
         for (int i = 0; i < fitness.length; i++) {
-            if (fitness[i] < 0)
-                fitnessAjustado[i] = fitness[i] + minAbs;
-            else
-                fitnessAjustado[i] = fitness[i];
+            if (fitness[i] < 0) fitnessAjustado[i] = fitness[i] + minAbs;
+            else fitnessAjustado[i] = fitness[i];
 
             total += fitnessAjustado[i];
         }
@@ -32,26 +29,25 @@ public class Ruleta implements Seleccion {
         //se saca el porcentaje de cada fitness correspondiente con el acumulado
         double puntuacion[] = new double[fitness.length];
         for (int i = 0; i < fitnessAjustado.length; i++) {
-             puntuacion[i] = fitnessAjustado[i] / total;
+            puntuacion[i] = (double) fitnessAjustado[i] / total;
         }
 
         //se saca la nueva poblacion
         Cromosoma nuevaPoblacion[] = new Cromosoma[poblacion.length];
+        Random rand = new Random();
         for (int i = 0; i < poblacion.length; i++) {
-
             //se saca un random de 0 a 1
-            Random rand = new Random();
             double random = rand.nextDouble();
-            double acumulado = 0;
 
             //se va sumando las puntuacion y cuando el random pase a ser menor significa que
             //que entra en el rango de la ultima puntuacion sumada
             int j = 0;
-            while (random > acumulado) {
-                acumulado += puntuacion[j];
+            double acumulado = puntuacion[0];
+            while (j < puntuacion.length - 1 && random > acumulado) {
                 j++;
+                acumulado += puntuacion[j];
             }
-            nuevaPoblacion[i] = poblacion[j];
+            nuevaPoblacion[i] = poblacion[j].copia();
         }
 
         return nuevaPoblacion;

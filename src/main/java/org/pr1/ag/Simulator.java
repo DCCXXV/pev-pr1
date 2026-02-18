@@ -12,7 +12,7 @@ public class Simulator {
     private int maxGeneraciones;
     private int generacionActual;
 
-    private Seleccion seleccion;
+    //private Seleccion seleccion;
     private Cruce cruce;
     private Mutacion mutacion;
 
@@ -31,6 +31,8 @@ public class Simulator {
     public Simulator(
         int maxGeneraciones,
         int tamPoblacion,
+        Seleccion seleccion,
+        Mutacion mutacion,
         Supplier<Cromosoma> factoriaCromosomas
     ) {
         this.maxGeneraciones = maxGeneraciones;
@@ -38,13 +40,15 @@ public class Simulator {
         this.factoriaCromosomas = factoriaCromosomas;
         this.generacionActual = 0;
 
+        this.mutacion = mutacion;
+
         iniciarPoblacion();
         evaluarPoblacion();
         while (this.generacionActual < this.maxGeneraciones) {
             generaElite();
-            //     seleccion.seleccionar(poblacion, fitness);
+            poblacion = seleccion.seleccionar(poblacion, fitness);
             //     cruce con probCruce
-            //     mutacion con probMutacion
+            mutacion(probMutacion);
             introducirElite();
             evaluarPoblacion();
             //     generacionActual++;
@@ -79,6 +83,12 @@ public class Simulator {
             int idx = paresFitness[i][0];
             elite[i] = poblacion[idx].copia();
             fitnessElite[i] = fitness[idx];
+        }
+    }
+
+    private void mutacion(double probMutacion) {
+        for (int i = 0; i < tamPoblacion; i++) {
+            mutacion.mutar(poblacion[i], probMutacion);
         }
     }
 

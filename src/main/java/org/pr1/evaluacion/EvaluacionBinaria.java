@@ -68,6 +68,16 @@ public class EvaluacionBinaria {
         int[][] mapa = new int[rows][cols];
         boolean[][] visitado = new boolean[rows][cols];
 
+        // marcar paredes como 3
+        int[][] grid = scene.getGrid();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                boolean esPared = (!scene.isPonderado() && grid[r][c] == 1) ||
+                                  (scene.isPonderado()  && grid[r][c] == 0);
+                if (esPared) mapa[r][c] = 3;
+            }
+        }
+
         int numeroCamaras = cromosoma.getNumCamaras();
         boolean[][] datos = cromosoma.getCromosoma();
 

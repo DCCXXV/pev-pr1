@@ -9,6 +9,10 @@ public interface Cromosoma {
      *   0 = espacio vacío (no cubierto)
      *   1 = posición de cámara
      *   2 = celda visible por alguna cámara
+     *   3 = pared
      */
     int[][] generarMapa();
+
+    int getRows();
+    int getCols();
 }

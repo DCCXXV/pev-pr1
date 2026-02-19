@@ -267,7 +267,7 @@ public class Configuracion extends JPanel{
                     metodoMutacion,
                     supplier
             );
-            System.out.println("");
+            System.out.println(simulator.getResultado());
         });
         add(ejecutar, gbc);
     }

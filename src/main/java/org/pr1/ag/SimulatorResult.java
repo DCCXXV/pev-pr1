@@ -19,6 +19,9 @@ public class SimulatorResult {
     private final int mejorFitness;
     private final Cromosoma mejorCromosoma;
 
+    private final int rows;
+    private final int cols;
+
     public SimulatorResult(
         int[] mejoresPorGeneracion,
         int[] mejoresAbsolutos,
@@ -31,6 +34,8 @@ public class SimulatorResult {
         this.mediaPorGeneracion = mediaPorGeneracion;
         this.mejorFitness = mejorFitness;
         this.mejorCromosoma = mejorCromosoma;
+        this.rows = mejorCromosoma.getRows();
+        this.cols = mejorCromosoma.getCols();
     }
 
     // mejor fitness de la población en cada generación
@@ -58,11 +63,20 @@ public class SimulatorResult {
         return mejorCromosoma;
     }
 
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
     /**
      * mapa visual de la mejor solución:
-     *   0 = nada
+     *   0 = espacio vacío (no cubierto)
      *   1 = cámara
      *   2 = celda cubierta por alguna cámara
+     *   3 = pared
      */
     public int[][] getMapa() {
         return mejorCromosoma.generarMapa();

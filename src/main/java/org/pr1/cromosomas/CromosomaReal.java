@@ -62,6 +62,16 @@ public class CromosomaReal implements Cromosoma {
         return scene;
     }
 
+    @Override
+    public int getRows() {
+        return scene.getRows();
+    }
+
+    @Override
+    public int getCols() {
+        return scene.getCols();
+    }
+
     private void randomInit() {
         for (int k = 0; k < numCamaras; k++) {
             int base = k * GENES_POR_CAMARA;

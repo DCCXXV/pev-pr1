@@ -94,6 +94,15 @@ public class EvaluacionConica {
 
         int[][] mapa = new int[rows][cols];
 
+        // marcar paredes como 3
+        for (int r = 0; r < rows; r++) {
+            for (int col = 0; col < cols; col++) {
+                boolean esPared = (ponderado && grid[r][col] == 0) ||
+                                  (!ponderado && grid[r][col] == 1);
+                if (esPared) mapa[r][col] = 3;
+            }
+        }
+
         for (int k = 0; k < numCamaras; k++) {
             int base = k * 3;
             double camX = genes[base];

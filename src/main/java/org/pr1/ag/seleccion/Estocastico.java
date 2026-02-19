@@ -1,50 +1,45 @@
 package org.pr1.ag.seleccion;
 
-import java.util.Random;
 import org.pr1.cromosomas.Cromosoma;
 
-public class Estocastico implements Seleccion {
+import java.util.Random;
 
+public class Estocastico implements Seleccion{
     @Override
     public Cromosoma[] seleccionar(Cromosoma[] poblacion, int[] fitness) {
-        int n = poblacion.length;
 
-        // desplazar fitness para que no sea negativo
-        int min = Integer.MAX_VALUE;
-        for (int fit : fitness) if (fit < min) min = fit;
-        int offset = min < 0 ? -min : 0;
-
-        //calcular la suma total de los fitness ajustados
+        //calcular la suma total de los fitness
         int total = 0;
-        int[] fitnessAjustado = new int[n];
-        for (int i = 0; i < n; i++) {
-            fitnessAjustado[i] = fitness[i] + offset;
-            total += fitnessAjustado[i];
-        }
+        for (int fit : fitness)
+            total += fit;
 
-        //distancia fija entre punteros (paso uniforme)
-        double distMax = (double) total / n;
+        //distancia maxima para que puedan entrar todos los "punteros"
+        double distMax = total / poblacion.length;
 
-        //punto de inicio aleatorio en [0, distMax)
+        //distancia real
         Random rand = new Random();
-        double current = rand.nextDouble() * distMax;
+        double distancia = rand.nextDouble() * distMax;
 
-        //acumulado del fitness y variables auxiliares
+        //acumulado del los fitness y distancia al puntero actual
         int acumulado = 0;
+        double current = distancia;
+
+        //variables auxiliares
         int i = 0;
         int numEncontrados = 0;
-        Cromosoma nuevaPoblacion[] = new Cromosoma[n];
+        Cromosoma nuevaPoblacion[] = new Cromosoma[poblacion.length];
 
         //se saca la nueva poblacion
-        while (i < n && numEncontrados < n) {
+        while (i < fitness.length && numEncontrados != poblacion.length) {
+
             //se va sumando el fitness de cada individuo
-            acumulado += fitnessAjustado[i];
+            acumulado += fitness[i];
 
             //se meten todos los punteros que se hayan quedado por detras del acumulado actual
-            while (numEncontrados < n && current < acumulado) {
+            while (current < acumulado) {
                 nuevaPoblacion[numEncontrados] = poblacion[i].copia();
                 numEncontrados++;
-                current += distMax;
+                current += distancia;
             }
             i++;
         }

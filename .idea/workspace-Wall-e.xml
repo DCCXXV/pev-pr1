@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8af95062-fb39-438e-be57-71a950e1bf07" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/pr1/ui/Configuracion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/pr1/ui/Interfaz.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/pr1/ui/Tablero.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/pr1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/pr1/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Estocastico.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Estocastico.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Ruleta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Ruleta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/pr1/ui/.gitkeep" beforeDir="false" />
+    </list>
+    <list id="420e49a9-4a62-44bf-af47-4a49006bc204" name="Changes by veinticinco" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;N3STOR173&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DCCXXV/pev-pr1.git&quot;,
+    &quot;accountId&quot;: &quot;f07ec8c2-441d-4e4c-b881-c69acac71d0b&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/Main.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ag/Simulator.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Estocastico.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Ruleta.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Torneo.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ag/seleccion/Truncamiento.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/cromosomas/CromosomaBinario.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/evaluacion/EvaluacionBinaria.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/org/pr1/ui/Tablero.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="39IWBJVISeVW4C1nltiWExcM91I" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/nesto/OneDrive/Documentos/1 Estudios/4 ingenieria de software/PE/pev-pr1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.pr1.Main" />
+      <module name="pev-pr1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.pr1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8af95062-fb39-438e-be57-71a950e1bf07" name="Changes" comment="" />
+      <created>1770383928224</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770383928224</updated>
+      <workItem from="1770383929949" duration="620000" />
+      <workItem from="1770384741623" duration="4177000" />
+      <workItem from="1770815268513" duration="5630000" />
+      <workItem from="1770987947223" duration="5916000" />
+      <workItem from="1771060245991" duration="2841000" />
+      <workItem from="1771068591954" duration="640000" />
+      <workItem from="1771248147737" duration="2107000" />
+      <workItem from="1771265107678" duration="8886000" />
+      <workItem from="1771420506451" duration="5029000" />
+      <workItem from="1771508961748" duration="61000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

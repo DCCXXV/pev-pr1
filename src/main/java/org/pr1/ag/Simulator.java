@@ -30,15 +30,18 @@ public class Simulator {
     private Cromosoma[] elite;
     private int[] fitnessElite;
 
+    // resultados acumulados durante la ejec
+    private SimulatorResult resultado;
+
     public Simulator(
         int maxGeneraciones,
         int tamPoblacion,
         double probCruce,
         double probMutacion,
         int elitismo,
-        Seleccion seleccion, //metodo de seleccion
-        Cruce cruce, //metodo de cruce
-        Mutacion mutacion, //metodo de mutacion
+        Seleccion seleccion,
+        Cruce cruce,
+        Mutacion mutacion,
         Supplier<Cromosoma> factoriaCromosomas
     ) {
         this.maxGeneraciones = maxGeneraciones;
@@ -53,8 +56,25 @@ public class Simulator {
         this.cruce = cruce;
         this.mutacion = mutacion;
 
+        // arrays para la gráfica de evolución
+        int[] mejoresPorGeneracion = new int[maxGeneraciones];
+        int[] mejoresAbsolutos = new int[maxGeneraciones];
+        double[] mediaPorGeneracion = new double[maxGeneraciones];
+
+        // inicializar población y evaluarla
         iniciarPoblacion();
         evaluarPoblacion();
+
+        // mejor absoluto inicial (población 0, antes del primer bucle)
+        int mejorFitnessAbsoluto = Integer.MIN_VALUE;
+        Cromosoma mejorCromosomaAbsoluto = null;
+        for (int i = 0; i < tamPoblacion; i++) {
+            if (fitness[i] > mejorFitnessAbsoluto) {
+                mejorFitnessAbsoluto = fitness[i];
+                mejorCromosomaAbsoluto = poblacion[i].copia();
+            }
+        }
+
         while (this.generacionActual < this.maxGeneraciones) {
             generaElite();
             poblacion = seleccion.seleccionar(poblacion, fitness);
@@ -62,8 +82,40 @@ public class Simulator {
             mutacion(probMutacion);
             introducirElite();
             evaluarPoblacion();
+
+            // recoger stats de esta generacion
+            int mejorGen = Integer.MIN_VALUE;
+            double suma = 0;
+            for (int i = 0; i < tamPoblacion; i++) {
+                suma += fitness[i];
+                if (fitness[i] > mejorGen) {
+                    mejorGen = fitness[i];
+                }
+                if (fitness[i] > mejorFitnessAbsoluto) {
+                    mejorFitnessAbsoluto = fitness[i];
+                    mejorCromosomaAbsoluto = poblacion[i].copia();
+                }
+            }
+
+            mejoresPorGeneracion[generacionActual] = mejorGen;
+            mejoresAbsolutos[generacionActual] = mejorFitnessAbsoluto;
+            mediaPorGeneracion[generacionActual] = suma / tamPoblacion;
+
             generacionActual++;
         }
+
+        resultado = new SimulatorResult(
+            mejoresPorGeneracion,
+            mejoresAbsolutos,
+            mediaPorGeneracion,
+            mejorFitnessAbsoluto,
+            mejorCromosomaAbsoluto
+        );
+    }
+
+    // devuelve todos los resultados de la ejecución
+    public SimulatorResult getResultado() {
+        return resultado;
     }
 
     private void iniciarPoblacion() {
@@ -99,18 +151,15 @@ public class Simulator {
 
     private void cruce(double probCruce) {
         Random rng = new Random();
-        // seleccionar individuos cuyo random < probCruce
         ArrayList<Integer> seleccionados = new ArrayList<>();
         for (int i = 0; i < tamPoblacion; i++) {
             if (rng.nextDouble() < probCruce) {
                 seleccionados.add(i);
             }
         }
-        // si hay número impar, quitar el último
         if (seleccionados.size() % 2 != 0) {
             seleccionados.remove(seleccionados.size() - 1);
         }
-        // emparejar de dos en dos y cruzar
         for (int i = 0; i < seleccionados.size(); i += 2) {
             cruce.cruzar(
                 poblacion[seleccionados.get(i)],

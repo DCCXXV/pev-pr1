@@ -75,6 +75,11 @@ public class CromosomaReal implements Cromosoma {
         return EvaluacionConica.evaluar(scene, this);
     }
 
+    @Override
+    public int[][] generarMapa() {
+        return EvaluacionConica.generarMapa(scene, this);
+    }
+
     public CromosomaReal copia() {
         return new CromosomaReal(this);
     }

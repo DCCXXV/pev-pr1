@@ -60,6 +60,73 @@ public class EvaluacionBinaria {
         return total;
     }
 
+    public static int[][] generarMapa(CromosomaBinario cromosoma) {
+        Scene scene = cromosoma.getScene();
+        int rows = scene.getRows();
+        int cols = scene.getCols();
+
+        int[][] mapa = new int[rows][cols];
+        boolean[][] visitado = new boolean[rows][cols];
+
+        int numeroCamaras = cromosoma.getNumCamaras();
+        boolean[][] datos = cromosoma.getCromosoma();
+
+        for (int i = 0; i < numeroCamaras; i++) {
+            int posX = Math.min(parsearBinario(datos[i * 2]), cols - 1);
+            int posY = Math.min(parsearBinario(datos[i * 2 + 1]), rows - 1);
+
+            int[] pos = new int[] { posX, posY };
+            int baldosa = scene.getGrid()[posY][posX];
+
+            boolean esColumna =
+                (!scene.isPonderado() && baldosa == 1) ||
+                (scene.isPonderado() && baldosa == 0);
+
+            if (!esColumna) {
+                marcarAvanzar(scene, pos, 0, -1, visitado, mapa);
+                marcarAvanzar(scene, pos, 0, 1, visitado, mapa);
+                marcarAvanzar(scene, pos, 1, -1, visitado, mapa);
+                marcarAvanzar(scene, pos, 1, 1, visitado, mapa);
+            }
+
+            // la cámara tiene prioridad sobre celdas visibles
+            mapa[posY][posX] = 1;
+        }
+
+        return mapa;
+    }
+
+    private static void marcarAvanzar(
+        Scene scene,
+        int[] pos,
+        int eje,
+        int avance,
+        boolean[][] visitado,
+        int[][] mapa
+    ) {
+        int[] baldosa = new int[] { pos[0], pos[1] };
+        baldosa[eje] += avance;
+
+        int limite = eje == 0 ? scene.getCols() : scene.getRows();
+
+        while (baldosa[eje] >= 0 && baldosa[eje] < limite) {
+            if (
+                !scene.isPonderado() &&
+                scene.getGrid()[baldosa[1]][baldosa[0]] == 1
+            ) break;
+            if (
+                scene.isPonderado() &&
+                scene.getGrid()[baldosa[1]][baldosa[0]] == 0
+            ) break;
+
+            if (!visitado[baldosa[1]][baldosa[0]]) {
+                mapa[baldosa[1]][baldosa[0]] = 2;
+            }
+            visitado[baldosa[1]][baldosa[0]] = true;
+            baldosa[eje] += avance;
+        }
+    }
+
     private static int parsearBinario(boolean[] bits) {
         int resultado = 0;
 

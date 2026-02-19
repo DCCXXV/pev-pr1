@@ -81,6 +81,72 @@ public class EvaluacionConica {
         return fitness - penalizacionAcumulada;
     }
 
+    public static int[][] generarMapa(Scene s, CromosomaReal c) {
+        double[] genes = c.getGenes();
+        int numCamaras = c.getNumCamaras();
+        double rango = c.getRangoVision();
+        double apertura = c.getAnguloApertura();
+        boolean ponderado = s.isPonderado();
+
+        int rows = s.getRows();
+        int cols = s.getCols();
+        int[][] grid = s.getGrid();
+
+        int[][] mapa = new int[rows][cols];
+
+        for (int k = 0; k < numCamaras; k++) {
+            int base = k * 3;
+            double camX = genes[base];
+            double camY = genes[base + 1];
+            double theta = genes[base + 2];
+
+            int celdaCamX = (int) camX;
+            int celdaCamY = (int) camY;
+
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    if (ponderado && grid[row][col] == 0) continue;
+                    if (!ponderado && grid[row][col] == 1) continue;
+
+                    double celdaX = col + 0.5;
+                    double celdaY = row + 0.5;
+
+                    double dist = Math.sqrt(
+                        Math.pow(celdaX - camX, 2) + Math.pow(celdaY - camY, 2)
+                    );
+                    if (dist > rango) continue;
+
+                    double angulo = Math.toDegrees(
+                        Math.atan2(celdaY - camY, celdaX - camX)
+                    );
+                    if (angulo < 0) angulo += 360;
+
+                    double diff = Math.abs(angulo - theta);
+                    if (diff > 180) diff = 360 - diff;
+                    if (diff > apertura / 2.0) continue;
+
+                    if (!lineaLibre(camX, camY, celdaX, celdaY, s, c)) continue;
+
+                    if (mapa[row][col] != 1) {
+                        mapa[row][col] = 2;
+                    }
+                }
+            }
+
+            // La cámara tiene prioridad sobre celdas visibles
+            if (
+                celdaCamX >= 0 &&
+                celdaCamX < cols &&
+                celdaCamY >= 0 &&
+                celdaCamY < rows
+            ) {
+                mapa[celdaCamY][celdaCamX] = 1;
+            }
+        }
+
+        return mapa;
+    }
+
     /**
      * ALGORITMO DE RAYCASTING (VISIBILIDAD)
      * -------------------------------------

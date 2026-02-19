@@ -28,7 +28,6 @@ public class CruceBlxAlpha implements Cruce {
 
             // hki generado aleatoriamente en el intervalo [Cmin – I * alpha, Cmax + I * alpha]
             genes1[i] =
-                rng.nextDouble() *
                 (cmin - I * alpha) +
                 rng.nextDouble() * ((cmax + I * alpha) - (cmin - I * alpha));
             genes2[i] =

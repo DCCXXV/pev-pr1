@@ -82,6 +82,15 @@ public class EvaluacionBinaria {
         int numeroCamaras = cromosoma.getNumCamaras();
         boolean[][] datos = cromosoma.getCromosoma();
 
+        // pre marcar todas las posiciones de cámara como visitadas
+        // para que los rayos de otras cámaras no sobreescriban su marcador
+        for (int i = 0; i < numeroCamaras; i++) {
+            int posX = Math.min(parsearBinario(datos[i * 2]), cols - 1);
+            int posY = Math.min(parsearBinario(datos[i * 2 + 1]), rows - 1);
+            mapa[posY][posX] = 1;
+            visitado[posY][posX] = true;
+        }
+
         for (int i = 0; i < numeroCamaras; i++) {
             int posX = Math.min(parsearBinario(datos[i * 2]), cols - 1);
             int posY = Math.min(parsearBinario(datos[i * 2 + 1]), rows - 1);
@@ -99,9 +108,6 @@ public class EvaluacionBinaria {
                 marcarAvanzar(scene, pos, 1, -1, visitado, mapa, cromosoma.getRangoVision());
                 marcarAvanzar(scene, pos, 1, 1, visitado, mapa, cromosoma.getRangoVision());
             }
-
-            // la cámara tiene prioridad sobre celdas visibles
-            mapa[posY][posX] = 1;
         }
 
         return mapa;
@@ -195,7 +201,7 @@ public class EvaluacionBinaria {
             if (!visited[baldosa[1]][baldosa[0]]) {
                 //si no es ponderado se suma 1
                 if (!scene.isPonderado()) puntuacion++;
-                else puntuacion += scene.getGrid()[baldosa[0]][baldosa[1]];
+                else puntuacion += scene.getGrid()[baldosa[1]][baldosa[0]];
             }
             visited[baldosa[1]][baldosa[0]] = true;
 

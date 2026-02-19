@@ -125,6 +125,16 @@ public class Configuracion extends JPanel{
         add(cruce, gbc);
         y++;
 
+        // Auxiliar Cruce
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        add(new JLabel("Auxiliar: (alpha-BlxAlpha probabilidad-Uniforme)"), gbc);
+
+        gbc.gridx = 1;
+        JSpinner auxiliar = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        add(auxiliar, gbc);
+        y++;
+
         // Forma de mutación
         gbc.gridx = 0;
         gbc.gridy = y;
@@ -215,7 +225,8 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceAritmetico();
                     break;
                 case "BlxAlpha":
-                    metodoCruce = new CruceBlxAlpha(0); //TODO habria que poner aqui un selector para alpha?
+                    int alpha = (int) auxiliar.getValue();
+                    metodoCruce = new CruceBlxAlpha(alpha);
                     break;
                 case "MonoPuntoBin":
                     metodoCruce = new CruceMonopuntoBin();
@@ -224,10 +235,12 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceMonopuntoReal();
                     break;
                 case "UniformeBin":
-                    metodoCruce = new CruceUniformeBin(0); //TODO habria que poner aqui un selector para prob?
+                    int probBin = (int) auxiliar.getValue();
+                    metodoCruce = new CruceUniformeBin(probBin);
                     break;
                 case "UniformeReal":
-                    metodoCruce = new CruceUniformeReal(0); //TODO habria que poner aqui un selector para prob?
+                    int probReal = (int) auxiliar.getValue();
+                    metodoCruce = new CruceUniformeReal(probReal);
             }
 
             String metodoM = (String) mutacion.getSelectedItem();
@@ -271,7 +284,7 @@ public class Configuracion extends JPanel{
 
             //SE MUESTRAN LOS DATOS
             SimulatorResult result = simulator.getResultado();
-            tablero.setTablero(result.getMapa()); //TODO esto ahora mismo no funciona
+            tablero.setTablero(result.getMapa());
             tablero.revalidate();
             tablero.repaint();
 

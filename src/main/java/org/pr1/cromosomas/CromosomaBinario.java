@@ -81,6 +81,39 @@ public class CromosomaBinario implements Cromosoma {
         return new CromosomaBinario(this);
     }
 
+    @Override
+    public int[][] generarMapa() {
+//        //se saca el mapa
+//        int[][] grid = this.scene.getGrid();
+//
+//        //matriz con el resultado
+//        int[][] res = new int[grid.length][grid[0].length];
+//
+//        //se sacan las paredes
+//        for (int i = 0; i < grid.length; i++) {
+//            for  (int j = 0; j < grid[0].length; j++) {
+//                if (!this.scene.isPonderado() && grid[i][j] == 1)
+//                    res[i][j] = 3;
+//                else if (this.scene.isPonderado() && grid[i][j] == 0)
+//                    res[i][j] = 3;
+//            }
+//        }
+//
+//        return res;
+
+        return EvaluacionBinaria.generarMapa(this);
+    }
+
+    @Override
+    public int getRows() {
+        return 0;
+    }
+
+    @Override
+    public int getCols() {
+        return 0;
+    }
+
     public boolean[][] getGenes() {
         return cromosoma;
     }

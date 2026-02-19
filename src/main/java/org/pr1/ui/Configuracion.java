@@ -2,6 +2,7 @@ package org.pr1.ui;
 
 import org.pr1.SupplierFactory;
 import org.pr1.ag.Simulator;
+import org.pr1.ag.SimulatorResult;
 import org.pr1.ag.cruce.*;
 import org.pr1.ag.mutacion.Mutacion;
 import org.pr1.ag.mutacion.MutacionBit;
@@ -16,7 +17,7 @@ import java.util.function.Supplier;
 
 public class Configuracion extends JPanel{
 
-    public Configuracion() {
+    public Configuracion(Tablero tablero) {
         setLayout(new GridBagLayout());
 
         /*
@@ -252,10 +253,10 @@ public class Configuracion extends JPanel{
             //mapa
             String mapaAux = (String) mapa.getSelectedItem();
 
-            //SUPPLIER
+            //supplier
             Supplier<Cromosoma> supplier = SupplierFactory.getMapa(mapaAux, modoPonderado, real);
 
-            //SE CREA EL NUEVO SIMULATOR
+            //SE HACE LA SIGUIENTE SIMULACION
             Simulator simulator = new Simulator(
                     numGen,
                     individuos,
@@ -267,7 +268,12 @@ public class Configuracion extends JPanel{
                     metodoMutacion,
                     supplier
             );
-            System.out.println(simulator.getResultado());
+
+            //SE MUESTRAN LOS DATOS
+            SimulatorResult result = simulator.getResultado();
+            tablero.setTablero(result.getMapa()); //TODO esto ahora mismo no funciona
+            tablero.revalidate();
+            tablero.repaint();
         });
         add(ejecutar, gbc);
     }

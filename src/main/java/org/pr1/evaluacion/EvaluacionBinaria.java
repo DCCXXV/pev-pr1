@@ -51,6 +51,7 @@ public class EvaluacionBinaria {
             }
 
             //se suman las puntuaciones si no esta en una columna
+            total += 1; //para contar la casilla de la camara
             total += avanzar(scene, pos, 0, -1);
             total += avanzar(scene, pos, 0, 1);
             total += avanzar(scene, pos, 1, -1);

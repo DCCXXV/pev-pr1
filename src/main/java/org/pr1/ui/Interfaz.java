@@ -11,21 +11,37 @@ public class Interfaz extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 10));
 
-        int[][] tablero = {
-                {0, 0, 1, 0, 2},
-                {0, 1, 0, 0, 0},
-                {2, 0, 0, 1, 0},
-                {0, 0, 0, 0, 0},
-                {1, 0, 2, 0, 0}
+        //se crean los paneles
+
+
+
+        //panel del tablero optimo
+        int[][] matriz = {
+                {2, 2, 1, 2, 2},
+                {2, 1, 2, 2, 2},
+                {2, 3, 2, 1, 2},
+                {2, 0, 3, 2, 0},
+                {1, 2, 2, 2, 2}
         };
+        Tablero tablero = new Tablero(matriz);
 
-        Tablero tableroPanel = new Tablero(tablero);
+        //panel de la grafica
+        Grafica grafica = new Grafica(
+            new int[]{1,2,3},
+            new int[]{1,2,3},
+            new double[]{1,2,3}
+        );
 
-        mainPanel.add(new Configuracion());
-        mainPanel.add(tableroPanel);
+        Configuracion configuracion = new Configuracion(tablero);
 
+        //se meten los paneles en el panel principal
+        mainPanel.add(configuracion);
+        mainPanel.add(tablero);
+        mainPanel.add(grafica);
+
+        //se mete el panel princiapl
         add(mainPanel);
     }
 

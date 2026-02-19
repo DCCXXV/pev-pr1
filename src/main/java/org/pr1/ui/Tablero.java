@@ -23,42 +23,54 @@ public class Tablero extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // Tamaño total del tablero
+        int anchoTablero = tablero[0].length * tamCelda;
+        int altoTablero = tablero.length * tamCelda;
+
+        // Calcular desplazamiento para centrar
+        int offsetX = (getWidth() - anchoTablero) / 2;
+        int offsetY = (getHeight() - altoTablero) / 2;
+
         for (int fila = 0; fila < tablero.length; fila++) {
             for (int col = 0; col < tablero[0].length; col++) {
 
-                int x = col * tamCelda;
-                int y = fila * tamCelda;
+                int x = offsetX + col * tamCelda;
+                int y = offsetY + fila * tamCelda;
 
-                // Fondo
-                //g2.setColor(Color.WHITE);
-                //g2.fillRect(x, y, tamCelda, tamCelda);
-
-                // Columnas
-                if (tablero[fila][col] == 1) {
-                    g2.setColor(Color.BLACK);
-                    g2.fillRect(x, y, tamCelda, tamCelda);
+                // Dibujar la celda según el valor
+                switch (tablero[fila][col]) {
+                    case 0:
+                        g2.setColor(Color.WHITE);
+                        g2.fillRect(x, y, tamCelda, tamCelda);
+                        break;
+                    case 1:
+                        g2.setColor(new Color(72, 201, 176));
+                        g2.fillRect(x, y, tamCelda, tamCelda);
+                        // Dibujar el punto en el centro
+                        g2.setColor(Color.RED);
+                        int diametro = tamCelda / 4;
+                        int centroX = x + tamCelda / 2 - diametro / 2;
+                        int centroY = y + tamCelda / 2 - diametro / 2;
+                        g2.fillOval(centroX, centroY, diametro, diametro);
+                        break;
+                    case 2:
+                        g2.setColor(new Color(72, 201, 176));
+                        g2.fillRect(x, y, tamCelda, tamCelda);
+                        break;
+                    case 3:
+                        g2.setColor(Color.BLACK);
+                        g2.fillRect(x, y, tamCelda, tamCelda);
+                        break;
                 }
 
-                // Líneas de la cuadrícula
+                // Dibujar bordes
                 g2.setColor(Color.GRAY);
                 g2.drawRect(x, y, tamCelda, tamCelda);
-
-                // Cámaras
-                if (tablero[fila][col] == 2) {
-                    g2.setColor(Color.BLUE);
-                    g2.fillOval(x + 10, y + 10, tamCelda - 20, tamCelda - 20);
-
-                    // Dibujo del cono de visión
-                    int radio = tamCelda * 2; // 2 casillas de profundidad
-                    int centroX = x + tamCelda / 2;
-                    int centroY = y + tamCelda / 2;
-                    int inicioAngulo = -15; // 30 grados de apertura centrado
-                    int anguloApertura = 30;
-
-                    g2.setColor(new Color(214, 19, 19, 255)); // amarillo semi-transparente
-                    g2.fillArc(centroX - radio, centroY - radio, radio * 2, radio * 2, inicioAngulo, anguloApertura);
-                }
             }
         }
+    }
+
+    public void setTablero(int[][] nuevoTablero) {
+        this.tablero = nuevoTablero;
     }
 }

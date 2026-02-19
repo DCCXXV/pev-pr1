@@ -19,11 +19,10 @@ public class Interfaz extends JFrame {
 
         //panel del tablero optimo
         int[][] matriz = {
-                {2, 2, 1, 2, 2},
-                {2, 1, 2, 2, 2},
-                {2, 3, 2, 1, 2},
-                {2, 0, 3, 2, 0},
-                {1, 2, 2, 2, 2}
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
         };
         Tablero tablero = new Tablero(matriz);
 
@@ -34,7 +33,7 @@ public class Interfaz extends JFrame {
             new double[]{1,2,3}
         );
 
-        Configuracion configuracion = new Configuracion(tablero);
+        Configuracion configuracion = new Configuracion(tablero, grafica);
 
         //se meten los paneles en el panel principal
         mainPanel.add(configuracion);

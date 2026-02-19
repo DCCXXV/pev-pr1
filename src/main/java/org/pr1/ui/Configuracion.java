@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class Configuracion extends JPanel{
 
-    public Configuracion(Tablero tablero) {
+    public Configuracion(Tablero tablero, Grafica grafica) {
         setLayout(new GridBagLayout());
 
         /*
@@ -274,6 +274,14 @@ public class Configuracion extends JPanel{
             tablero.setTablero(result.getMapa()); //TODO esto ahora mismo no funciona
             tablero.revalidate();
             tablero.repaint();
+
+            grafica.actualizarGrafica(
+                    result.getMejoresPorGeneracion(),
+                    result.getMejoresAbsolutos(),
+                    result.getMediaPorGeneracion()
+                    );
+            grafica.revalidate();
+            grafica.repaint();
         });
         add(ejecutar, gbc);
     }

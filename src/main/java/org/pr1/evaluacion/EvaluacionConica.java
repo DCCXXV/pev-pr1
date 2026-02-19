@@ -5,7 +5,7 @@ import org.pr1.cromosomas.CromosomaReal;
 
 public class EvaluacionConica {
 
-    private static int PENALIZACION = -100;
+    private static int PENALIZACION = 100;
 
     public static int evaluar(Scene s, CromosomaReal c) {
         double[] genes = c.getGenes();

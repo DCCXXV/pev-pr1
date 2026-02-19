@@ -273,8 +273,8 @@ public class Configuracion extends JPanel{
             Simulator simulator = new Simulator(
                     numGen,
                     individuos,
-                    porCruces,
-                    porMutaciones,
+                    porCruces / 100.0,
+                    porMutaciones / 100.0,
                     porElitismo,
                     metodoSeleccion,
                     metodoCruce,

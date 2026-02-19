@@ -10,7 +10,7 @@ public class CruceUniformeBin implements Cruce {
     private final Random rng = new Random();
 
     public CruceUniformeBin(double prob) {
-        this.prob = prob;
+        this.prob = prob; // [0, 1]
     }
 
     @Override

@@ -126,18 +126,23 @@ public class EvaluacionConica {
                 cx < 0 || cx >= s.getCols() || cy < 0 || cy >= s.getRows()
             ) return false;
 
-            // B. Chequeo de Muro Directo (0 es muro en tus mapas PDF)
-            if (s.getGrid()[cy][cx] == 0) return false;
+            // B. Chequeo de Muro Directo
+            boolean esObstaculo = s.isPonderado()
+                ? s.getGrid()[cy][cx] == 0 // ponderado: 0 = sin peso = obstáculo
+                : s.getGrid()[cy][cx] == 1; // no ponderado: 1 = pared
+            if (esObstaculo) return false;
             // C. LÓGICA ANTICLIPPING (Bloqueo de esquinas)
             // Si hemos cambiado de columna Y de fila a la vez...
             if (cx != prevX && cy != prevY) {
                 // Verificamos los dos vecinos que forman la esquina
-                // Si ambos son muros (0), entonces la esquina está cerrada.
-                if (
-                    s.getGrid()[prevY][cx] == 0 && s.getGrid()[cy][prevX] == 0
-                ) {
-                    return false;
-                }
+                // Si ambos son muros, entonces la esquina está cerrada.
+                boolean esquina1 = s.isPonderado()
+                    ? s.getGrid()[prevY][cx] == 0
+                    : s.getGrid()[prevY][cx] == 1;
+                boolean esquina2 = s.isPonderado()
+                    ? s.getGrid()[cy][prevX] == 0
+                    : s.getGrid()[cy][prevX] == 1;
+                if (esquina1 && esquina2) return false;
             }
             // Actualizamos la celda previa
             prevX = cx;

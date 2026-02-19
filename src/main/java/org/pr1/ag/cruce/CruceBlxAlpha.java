@@ -10,7 +10,7 @@ public class CruceBlxAlpha implements Cruce {
     private final Random rng = new Random();
 
     public CruceBlxAlpha(double alpha) {
-        this.alpha = alpha;
+        this.alpha = alpha; // [0, 1]
     }
 
     @Override
@@ -26,19 +26,19 @@ public class CruceBlxAlpha implements Cruce {
             double cmax = Math.max(genes1[i], genes2[i]);
             double I = cmax - cmin;
 
-            // se genera aleatoriamente en el intervalo [Cmin – I * alpha, Cmax + I * alpha]
+            // hki generado aleatoriamente en el intervalo [Cmin – I * alpha, Cmax + I * alpha]
             genes1[i] =
-                cmin -
-                I *
-                alpha *
                 rng.nextDouble() *
-                ((cmax + I * alpha) - (cmin - I * alpha));
+                (cmin - I * alpha) +
+                rng.nextDouble() * ((cmax + I * alpha) - (cmin - I * alpha));
             genes2[i] =
-                cmin -
-                I *
-                alpha *
-                rng.nextDouble() *
-                ((cmax + I * alpha) - (cmin - I * alpha));
+                (cmin - I * alpha) +
+                rng.nextDouble() * ((cmax + I * alpha) - (cmin - I * alpha));
+
+            // truncar al rango válido del gen
+            double max = p1.getMax(i);
+            genes1[i] = Math.min(Math.max(genes1[i], 0), max - 0.001);
+            genes2[i] = Math.min(Math.max(genes2[i], 0), max - 0.001);
         }
     }
 }

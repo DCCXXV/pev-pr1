@@ -52,10 +52,10 @@ public class EvaluacionBinaria {
 
             //se suman las puntuaciones si no esta en una columna
             total += 1; //para contar la casilla de la camara
-            total += avanzar(scene, pos, 0, -1);
-            total += avanzar(scene, pos, 0, 1);
-            total += avanzar(scene, pos, 1, -1);
-            total += avanzar(scene, pos, 1, 1);
+            total += avanzar(scene, pos, 0, -1, cromosoma.getRangoVision());
+            total += avanzar(scene, pos, 0, 1, cromosoma.getRangoVision());
+            total += avanzar(scene, pos, 1, -1, cromosoma.getRangoVision());
+            total += avanzar(scene, pos, 1, 1, cromosoma.getRangoVision());
         }
 
         return total;
@@ -94,10 +94,10 @@ public class EvaluacionBinaria {
                 (scene.isPonderado() && baldosa == 0);
 
             if (!esColumna) {
-                marcarAvanzar(scene, pos, 0, -1, visitado, mapa);
-                marcarAvanzar(scene, pos, 0, 1, visitado, mapa);
-                marcarAvanzar(scene, pos, 1, -1, visitado, mapa);
-                marcarAvanzar(scene, pos, 1, 1, visitado, mapa);
+                marcarAvanzar(scene, pos, 0, -1, visitado, mapa, cromosoma.getRangoVision());
+                marcarAvanzar(scene, pos, 0, 1, visitado, mapa, cromosoma.getRangoVision());
+                marcarAvanzar(scene, pos, 1, -1, visitado, mapa, cromosoma.getRangoVision());
+                marcarAvanzar(scene, pos, 1, 1, visitado, mapa, cromosoma.getRangoVision());
             }
 
             // la cámara tiene prioridad sobre celdas visibles
@@ -113,14 +113,16 @@ public class EvaluacionBinaria {
         int eje,
         int avance,
         boolean[][] visitado,
-        int[][] mapa
+        int[][] mapa,
+        int rangoVision
     ) {
         int[] baldosa = new int[] { pos[0], pos[1] };
         baldosa[eje] += avance;
 
         int limite = eje == 0 ? scene.getCols() : scene.getRows();
 
-        while (baldosa[eje] >= 0 && baldosa[eje] < limite) {
+        int i = 0;
+        while (baldosa[eje] >= 0 && baldosa[eje] < limite && i < rangoVision) {
             if (
                 !scene.isPonderado() &&
                 scene.getGrid()[baldosa[1]][baldosa[0]] == 1
@@ -135,6 +137,7 @@ public class EvaluacionBinaria {
             }
             visitado[baldosa[1]][baldosa[0]] = true;
             baldosa[eje] += avance;
+            i++;
         }
     }
 
@@ -159,7 +162,7 @@ public class EvaluacionBinaria {
     eje con 0 para X y 1 para Y
     avance con -1 para hacia atras y 1 hacia delante
      */
-    private static int avanzar(Scene scene, int[] pos, int eje, int avance) {
+    private static int avanzar(Scene scene, int[] pos, int eje, int avance, int RangoVision) {
         //variable auxiliar para no modificar la posicion original
         int baldosa[] = new int[] { pos[0], pos[1] };
         baldosa[eje] += avance;
@@ -175,7 +178,8 @@ public class EvaluacionBinaria {
         int puntuacion = 0;
 
         //si se ha salido de los limites para
-        while (baldosa[eje] >= 0 && baldosa[eje] < limiteHaciaDelante) {
+        int i = 0;
+        while (baldosa[eje] >= 0 && baldosa[eje] < limiteHaciaDelante && i < RangoVision) {
             //si no es ponderado y hay un 1 es una columna
             if (
                 !scene.isPonderado() &&
@@ -195,8 +199,9 @@ public class EvaluacionBinaria {
             }
             visited[baldosa[1]][baldosa[0]] = true;
 
-            //se coge la siguiente baldosa
+            //se coge la siguiente baldosa y se marca el avance
             baldosa[eje] += avance;
+            i++;
         }
 
         return puntuacion;

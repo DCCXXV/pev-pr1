@@ -17,11 +17,13 @@ public class CromosomaBinario implements Cromosoma {
     private boolean[][] cromosoma;
     private Scene scene;
     private int numCamaras;
+    private int rangoVision;
 
-    public CromosomaBinario(int numCamaras, Scene scene) {
+    public CromosomaBinario(int numCamaras, int rangoVision, Scene scene) {
         //se coloca la escena y las camaras
         this.scene = scene;
         this.numCamaras = numCamaras;
+        this.rangoVision = rangoVision;
 
         //se crea el array del cromosoma
         this.cromosoma = new boolean[numCamaras * 2][];
@@ -70,6 +72,7 @@ public class CromosomaBinario implements Cromosoma {
         }
         this.scene = c.getScene();
         this.numCamaras = c.getNumCamaras();
+        this.rangoVision = c.getRangoVision();
     }
 
     public int evaluar() {
@@ -83,24 +86,6 @@ public class CromosomaBinario implements Cromosoma {
 
     @Override
     public int[][] generarMapa() {
-//        //se saca el mapa
-//        int[][] grid = this.scene.getGrid();
-//
-//        //matriz con el resultado
-//        int[][] res = new int[grid.length][grid[0].length];
-//
-//        //se sacan las paredes
-//        for (int i = 0; i < grid.length; i++) {
-//            for  (int j = 0; j < grid[0].length; j++) {
-//                if (!this.scene.isPonderado() && grid[i][j] == 1)
-//                    res[i][j] = 3;
-//                else if (this.scene.isPonderado() && grid[i][j] == 0)
-//                    res[i][j] = 3;
-//            }
-//        }
-//
-//        return res;
-
         return EvaluacionBinaria.generarMapa(this);
     }
 
@@ -125,4 +110,5 @@ public class CromosomaBinario implements Cromosoma {
     public boolean[][] getCromosoma() {return cromosoma;}
     public Scene getScene() {return scene;}
     public int getNumCamaras() {return numCamaras;}
+    public int getRangoVision() {return rangoVision;}
 }

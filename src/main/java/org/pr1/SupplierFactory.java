@@ -47,7 +47,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(4, museo, 3, 60);
                 else
-                    return () -> new CromosomaBinario(4, museo);
+                    return () -> new CromosomaBinario(4, 3,museo);
 
             case "Pasillos":
                 //escena
@@ -73,7 +73,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(7, pasillos, 5, 90);
                 else
-                    return () -> new CromosomaBinario(7, pasillos);
+                    return () -> new CromosomaBinario(7, 5, pasillos);
 
             case "Supermercado":
                 //escena
@@ -105,7 +105,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(8, supermercado, 7, 70);
                 else
-                    return () -> new CromosomaBinario(8, supermercado);
+                    return () -> new CromosomaBinario(8, 7, supermercado);
         }
         return null;
     }
@@ -134,7 +134,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(4, museo, 3, 60);
                 else
-                    return () -> new CromosomaBinario(4, museo);
+                    return () -> new CromosomaBinario(4, 3, museo);
 
             case "Pasillos":
                 //escena
@@ -158,7 +158,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(7, pasillos, 5, 90);
                 else
-                    return () -> new CromosomaBinario(7, pasillos);
+                    return () -> new CromosomaBinario(7, 5, pasillos);
 
             case  "Supermercado":
                 //escena
@@ -190,7 +190,7 @@ public class SupplierFactory {
                 if (real)
                     return () -> new CromosomaReal(8, supermercado, 7, 70);
                 else
-                    return () -> new CromosomaBinario(8, supermercado);
+                    return () -> new CromosomaBinario(8, 7, supermercado);
         }
         return null;
     }

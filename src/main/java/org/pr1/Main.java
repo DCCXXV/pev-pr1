@@ -28,30 +28,17 @@ public class Main {
     );
 
     public static void main(String[] args) {
-//        System.out.print("     ");
-//        for (int i = 0; i < museo.getGrid()[0].length; i++)
-//            System.out.print(i + "  ");
-//        System.out.println("\n");
-//        for (int y = 0; y < museo.getGrid().length; y++) {
-//            System.out.print(y + "    ");
-//            for (int x = 0; x < museo.getGrid()[y].length; x++) {
-//                System.out.print(museo.getGrid()[y][x] + "  ");
-//            }
-//            System.out.println();
+//        CromosomaBinario cromosomas[] = new CromosomaBinario[10];
+//        int fitness[] = new int[10];
+//        for (int i = 0; i < 10; i++) {
+//            cromosomas[i] = new CromosomaBinario(5, museo);
+//            fitness[i] = cromosomas[i].evaluar();
 //        }
-//        CromosomaBinario prueba = new CromosomaBinario(5, museo);
-        CromosomaBinario cromosomas[] = new CromosomaBinario[10];
-        int fitness[] = new int[10];
-        for (int i = 0; i < 10; i++) {
-            cromosomas[i] = new CromosomaBinario(5, museo);
-            fitness[i] = cromosomas[i].evaluar();
-        }
-        Seleccion metodo = new Truncamiento();
-        Cromosoma newCromosomas[] = metodo.seleccionar(cromosomas, fitness);
-        for (int i = 0; i < 10; i++) {
-            fitness[i] = newCromosomas[i].evaluar();
-        }
-
+//        Seleccion metodo = new Truncamiento();
+//        Cromosoma newCromosomas[] = metodo.seleccionar(cromosomas, fitness);
+//        for (int i = 0; i < 10; i++) {
+//            fitness[i] = newCromosomas[i].evaluar();
+//        }
 
         SwingUtilities.invokeLater(() -> {
             JFrame ventana = new Interfaz();

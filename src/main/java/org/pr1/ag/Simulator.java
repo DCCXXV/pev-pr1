@@ -36,9 +36,9 @@ public class Simulator {
         double probCruce,
         double probMutacion,
         int elitismo,
-        Seleccion seleccion,
-        Cruce cruce,
-        Mutacion mutacion,
+        Seleccion seleccion, //metodo de seleccion
+        Cruce cruce, //metodo de cruce
+        Mutacion mutacion, //metodo de mutacion
         Supplier<Cromosoma> factoriaCromosomas
     ) {
         this.maxGeneraciones = maxGeneraciones;

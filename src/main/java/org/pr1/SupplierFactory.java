@@ -49,7 +49,7 @@ public class SupplierFactory {
                 else
                     return () -> new CromosomaBinario(4, museo);
 
-            case "Pasillos":
+            case "Pasillo":
                 //escena
                 Scene pasillos = new Scene(
                     new int[][] {
@@ -75,7 +75,7 @@ public class SupplierFactory {
                 else
                     return () -> new CromosomaBinario(7, pasillos);
 
-            case "Supermercado":
+            case "SuperMercado":
                 //escena
                 Scene supermercado = new Scene(
                     new int[][] {
@@ -127,7 +127,7 @@ public class SupplierFactory {
                         {1, 1, 5, 5, 5, 0, 5, 5, 5, 1},
                         {1, 1, 1, 1, 1, 1, 1, 0, 1, 1}
                     },
-                    false
+                    true
                 );
 
                 //si es real o no
@@ -136,7 +136,7 @@ public class SupplierFactory {
                 else
                     return () -> new CromosomaBinario(4, museo);
 
-            case "Pasillos":
+            case "Pasillo":
                 //escena
                 Scene pasillos = new Scene(
                     new int[][]{
@@ -160,7 +160,7 @@ public class SupplierFactory {
                 else
                     return () -> new CromosomaBinario(7, pasillos);
 
-            case  "Supermercado":
+            case "SuperMercado":
                 //escena
                 Scene supermercado = new Scene(
                     new int[][]{

@@ -6,7 +6,7 @@ import java.awt.*;
 public class Tablero extends JPanel {
 
     private int[][] tablero;
-    private int tamCelda = 50;
+    private int tamCelda = 20;
 
     public Tablero(int[][] tablero) {
         this.tablero = tablero;

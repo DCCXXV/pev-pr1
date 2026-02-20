@@ -129,7 +129,7 @@ public class Configuracion extends JPanel{
         // Auxiliar Cruce
         gbc.gridx = 0;
         gbc.gridy = y;
-        add(new JLabel("Auxiliar: (alpha-BlxAlpha probabilidad-Uniforme)"), gbc);
+        add(new JLabel("Auxiliar (%): (alpha-BlxAlpha probabilidad-Uniforme)"), gbc);
 
         gbc.gridx = 1;
         JSpinner auxiliar = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
@@ -226,7 +226,7 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceAritmetico();
                     break;
                 case "BlxAlpha":
-                    int alpha = (int) auxiliar.getValue();
+                    double alpha = (double) auxiliar.getValue() / 100;
                     metodoCruce = new CruceBlxAlpha(alpha);
                     break;
                 case "MonoPuntoBin":
@@ -236,11 +236,11 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceMonopuntoReal();
                     break;
                 case "UniformeBin":
-                    int probBin = (int) auxiliar.getValue();
+                    double probBin = (double) auxiliar.getValue() / 100;
                     metodoCruce = new CruceUniformeBin(probBin);
                     break;
                 case "UniformeReal":
-                    int probReal = (int) auxiliar.getValue();
+                    double probReal = (double) auxiliar.getValue() / 100;
                     metodoCruce = new CruceUniformeReal(probReal);
             }
 

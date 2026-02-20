@@ -7,6 +7,7 @@ public class Tablero extends JPanel {
 
     private int[][] tablero;
     private int[][] tableroPonderado;
+    private int mejorFiness = 0;
     private int tamCelda = 22;
 
     public Tablero(int[][] tablero) {
@@ -84,10 +85,26 @@ public class Tablero extends JPanel {
             System.out.println("");
         }
         System.out.println("");
+
+        //mejor fitness
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Arial", Font.BOLD, 16));
+
+        String texto = String.valueOf(this.mejorFiness);
+
+        FontMetrics fm = g2.getFontMetrics();
+        int textWidth = fm.stringWidth(texto);
+
+        int textX = offsetX + (anchoTablero - textWidth) / 2;
+
+        int textY = offsetY + altoTablero + fm.getAscent() + 10;
+
+        g2.drawString(texto, textX, textY);
     }
 
-    public void setTablero(int[][] nuevoTablero, int[][]tableroPonderado) {
+    public void setTablero(int[][] nuevoTablero, int[][] tableroPonderado, int mejorFitness) {
         this.tablero = nuevoTablero;
         this.tableroPonderado = tableroPonderado;
+        this.mejorFiness = mejorFitness;
     }
 }

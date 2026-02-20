@@ -286,9 +286,9 @@ public class Configuracion extends JPanel{
             //SE MUESTRAN LOS DATOS
             SimulatorResult result = simulator.getResultado();
             if (!modoPonderado)
-                tablero.setTablero(result.getMapa(), null);
+                tablero.setTablero(result.getMapa(), null, result.getMejorFitness());
             else
-                tablero.setTablero(result.getMapa(), Mapas.getMapa(mapaAux+"Ponderado"));
+                tablero.setTablero(result.getMapa(), Mapas.getMapa(mapaAux+"Ponderado"), result.getMejorFitness());
             tablero.revalidate();
             tablero.repaint();
 

@@ -1,5 +1,6 @@
 package org.pr1.ui;
 
+import org.pr1.Mapas;
 import org.pr1.SupplierFactory;
 import org.pr1.ag.Simulator;
 import org.pr1.ag.SimulatorResult;
@@ -284,7 +285,10 @@ public class Configuracion extends JPanel{
 
             //SE MUESTRAN LOS DATOS
             SimulatorResult result = simulator.getResultado();
-            tablero.setTablero(result.getMapa());
+            if (!modoPonderado)
+                tablero.setTablero(result.getMapa(), null);
+            else
+                tablero.setTablero(result.getMapa(), Mapas.getMapa(mapaAux+"Ponderado"));
             tablero.revalidate();
             tablero.repaint();
 

@@ -13,10 +13,6 @@ public class Interfaz extends JFrame {
 
         JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 10));
 
-        //se crean los paneles
-
-
-
         //panel del tablero optimo
         int[][] matriz = {
                 {0, 0, 0, 0},

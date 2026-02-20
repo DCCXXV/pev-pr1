@@ -6,7 +6,8 @@ import java.awt.*;
 public class Tablero extends JPanel {
 
     private int[][] tablero;
-    private int tamCelda = 30;
+    private int[][] tableroPonderado;
+    private int tamCelda = 22;
 
     public Tablero(int[][] tablero) {
         this.tablero = tablero;
@@ -48,7 +49,7 @@ public class Tablero extends JPanel {
                         g2.fillRect(x, y, tamCelda, tamCelda);
                         // Dibujar el punto en el centro
                         g2.setColor(Color.RED);
-                        int diametro = tamCelda / 4;
+                        int diametro = 7;
                         int centroX = x + tamCelda / 2 - diametro / 2;
                         int centroY = y + tamCelda / 2 - diametro / 2;
                         g2.fillOval(centroX, centroY, diametro, diametro);
@@ -63,14 +64,30 @@ public class Tablero extends JPanel {
                         break;
                 }
 
+                // Dibujar número centrado (por ejemplo, el valor de la celda)
+                if (this.tableroPonderado != null && this.tableroPonderado[fila][col] > 1) {
+                    Font fuente = new Font("Arial", Font.BOLD, 11);
+                    g2.setFont(fuente);
+                    g2.setColor(Color.BLACK);
+                    String texto = String.valueOf(this.tableroPonderado[fila][col]);
+                    FontMetrics fm = g2.getFontMetrics();
+                    int textY = y + (tamCelda + 1) / 2 + 11;
+                    g2.drawString(texto, x, textY);
+                }
+
                 // Dibujar bordes
                 g2.setColor(Color.GRAY);
                 g2.drawRect(x, y, tamCelda, tamCelda);
+
+                System.out.print(this.tablero[fila][col] + " ");
             }
+            System.out.println("");
         }
+        System.out.println("");
     }
 
-    public void setTablero(int[][] nuevoTablero) {
+    public void setTablero(int[][] nuevoTablero, int[][]tableroPonderado) {
         this.tablero = nuevoTablero;
+        this.tableroPonderado = tableroPonderado;
     }
 }

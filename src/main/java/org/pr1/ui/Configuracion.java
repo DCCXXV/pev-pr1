@@ -226,7 +226,7 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceAritmetico();
                     break;
                 case "BlxAlpha":
-                    double alpha = (double) auxiliar.getValue() / 100;
+                    double alpha = ((Number) auxiliar.getValue()).doubleValue() / 100;
                     metodoCruce = new CruceBlxAlpha(alpha);
                     break;
                 case "MonoPuntoBin":
@@ -236,11 +236,11 @@ public class Configuracion extends JPanel{
                     metodoCruce = new CruceMonopuntoReal();
                     break;
                 case "UniformeBin":
-                    double probBin = (double) auxiliar.getValue() / 100;
+                    double probBin = ((Number) auxiliar.getValue()).doubleValue() / 100;
                     metodoCruce = new CruceUniformeBin(probBin);
                     break;
                 case "UniformeReal":
-                    double probReal = (double) auxiliar.getValue() / 100;
+                    double probReal = ((Number) auxiliar.getValue()).doubleValue() / 100;
                     metodoCruce = new CruceUniformeReal(probReal);
             }
 

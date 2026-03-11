@@ -34,8 +34,8 @@ public class SimulatorResult {
         this.mediaPorGeneracion = mediaPorGeneracion;
         this.mejorFitness = mejorFitness;
         this.mejorCromosoma = mejorCromosoma;
-        this.rows = mejorCromosoma.getRows();
-        this.cols = mejorCromosoma.getCols();
+        this.rows = mejorCromosoma.getScene().getRows();
+        this.cols = mejorCromosoma.getScene().getCols();
     }
 
     // mejor fitness de la población en cada generación

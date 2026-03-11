@@ -1,5 +1,7 @@
 package G12P2.cromosomas;
 
+import G12P2.Scene;
+
 public interface Cromosoma {
     int evaluar();
     Cromosoma copia();
@@ -12,4 +14,5 @@ public interface Cromosoma {
      *   3 = pared
      */
     int[][] generarMapa();
+    Scene getScene();
 }

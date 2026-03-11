@@ -12,7 +12,4 @@ public interface Cromosoma {
      *   3 = pared
      */
     int[][] generarMapa();
-
-    int getRows();
-    int getCols();
 }

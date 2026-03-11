@@ -32,8 +32,8 @@ public class CromosomaDrones implements Cromosoma {
     //copia
     public CromosomaDrones(CromosomaDrones other) {
         this.genes = other.getGenes().clone();
-        this.D = other.getD();
-        this.C = other.getC();
+        this.D = other.getNumDrones();
+        this.C = other.getNumCamaras();
         this.scene = other.getScene();
     }
 
@@ -58,26 +58,16 @@ public class CromosomaDrones implements Cromosoma {
         this.genes = genes;
     }
 
-    public int getC() {
+    public int getNumCamaras() {
         return C;
     }
 
-    public int getD() {
+    public int getNumDrones() {
         return D;
     }
 
     public Scene getScene() {
         return scene;
-    }
-
-    @Override
-    public int getRows() {
-        return scene.getRows();
-    }
-
-    @Override
-    public int getCols() {
-        return scene.getCols();
     }
 
     @Override

@@ -46,7 +46,7 @@ public class CruceOX implements Cruce {
         int cont1 = puntoCorte2 % n;
         int cont2 = puntoCorte2 % n;
 
-        // empezamos a la darecha del segundo punto de corte
+        // empezamos a la derecha del segundo punto de corte
         int j = puntoCorte2;
         while (j < n) {
             while (segGenes2.contains(orig1[cont1])) cont1 = (cont1 + 1) % n;

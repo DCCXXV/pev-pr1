@@ -2,11 +2,9 @@ package G12P2.ag.cruce;
 
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
-import java.util.Random;
 
+// cruce por ciclos
 public class CruceCX implements Cruce {
-
-    private Random rng = new Random();
 
     @Override
     public void cruzar(Cromosoma padre1, Cromosoma padre2) {

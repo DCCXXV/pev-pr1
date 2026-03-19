@@ -6,6 +6,8 @@ import G12P2.ag.mutacion.Mutacion;
 import G12P2.ag.seleccion.Seleccion;
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
+import G12P2.evaluacion.EvaluacionDrones;
+import G12P2.evaluacion.resEvaluacion;
 import G12P2.ui.Tablero;
 
 import java.util.ArrayList;
@@ -30,10 +32,10 @@ public class Simulator {
     private Cromosoma[] poblacion;
     private int tamPoblacion;
     private Supplier<Cromosoma> factoriaCromosomas;
-    private int[] fitness;
+    private double[] fitness;
 
     private Cromosoma[] elite;
-    private int[] fitnessElite;
+    private double[] fitnessElite;
 
     // TODO: interfaz !!
     private boolean memetico;
@@ -68,8 +70,8 @@ public class Simulator {
         this.mutacion = mutacion;
 
         // arrays para la gráfica de evolución
-        int[] mejoresPorGeneracion = new int[maxGeneraciones];
-        int[] mejoresAbsolutos = new int[maxGeneraciones];
+        double[] mejoresPorGeneracion = new double[maxGeneraciones];
+        double[] mejoresAbsolutos = new double[maxGeneraciones];
         double[] mediaPorGeneracion = new double[maxGeneraciones];
 
         // inicializar población y evaluarla
@@ -77,7 +79,7 @@ public class Simulator {
         evaluarPoblacion();
 
         // mejor absoluto inicial (población 0, antes del primer bucle)
-        int mejorFitnessAbsoluto = Integer.MIN_VALUE;
+        double mejorFitnessAbsoluto = Integer.MIN_VALUE;
         Cromosoma mejorCromosomaAbsoluto = null;
         for (int i = 0; i < tamPoblacion; i++) {
             if (fitness[i] > mejorFitnessAbsoluto) {
@@ -96,7 +98,7 @@ public class Simulator {
             evaluarPoblacion();
 
             // recoger stats de esta generacion
-            int mejorGen = Integer.MIN_VALUE;
+            double mejorGen = Double.MIN_VALUE;
             double suma = 0;
             for (int i = 0; i < tamPoblacion; i++) {
                 suma += fitness[i];
@@ -146,26 +148,27 @@ public class Simulator {
     }
 
     private void evaluarPoblacion() {
-        fitness = new int[tamPoblacion];
+        fitness = new double[tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++) {
-            fitness[i] = poblacion[i].evaluar();
+            resEvaluacion res = poblacion[i].evaluar();
+            fitness[i] = res.getFitness();
         }
     }
 
     private void generaElite() {
-        int[][] paresFitness = new int[tamPoblacion][2];
+        double[][] paresFitness = new double[tamPoblacion][2];
         for (int i = 0; i < tamPoblacion; i++) {
             paresFitness[i][0] = i;
             paresFitness[i][1] = fitness[i];
         }
-        Arrays.sort(paresFitness, (a, b) -> Integer.compare(b[1], a[1]));
+        Arrays.sort(paresFitness, (a, b) -> Double.compare(b[1], a[1]));
 
         elite = new Cromosoma[elitismo];
-        fitnessElite = new int[elitismo];
+        fitnessElite = new double[elitismo];
         for (int i = 0; i < elitismo; i++) {
-            int idx = paresFitness[i][0];
-            elite[i] = poblacion[idx].copia();
-            fitnessElite[i] = fitness[idx];
+            double idx = paresFitness[i][0];
+            elite[i] = poblacion[(int)idx].copia();
+            fitnessElite[i] = fitness[(int)idx];
         }
     }
 
@@ -206,7 +209,7 @@ public class Simulator {
             if (!(poblacion[k] instanceof CromosomaDrones)) continue;
 
             CromosomaDrones ind = (CromosomaDrones) poblacion[k];
-            int fitActual = fitness[k];
+            double fitActual = fitness[k];
             int[] genesActuales = ind.getGenes();
 
             // probar todas las inversiones posibles de tramos (i, j)
@@ -249,17 +252,17 @@ public class Simulator {
     }
 
     private void introducirElite() {
-        int[][] paresFitness = new int[tamPoblacion][2];
+        double[][] paresFitness = new double[tamPoblacion][2];
         for (int i = 0; i < tamPoblacion; i++) {
             paresFitness[i][0] = i;
             paresFitness[i][1] = fitness[i];
         }
-        Arrays.sort(paresFitness, (a, b) -> Integer.compare(a[1], b[1]));
+        Arrays.sort(paresFitness, (a, b) -> Double.compare(a[1], b[1]));
 
         for (int i = 0; i < elitismo; i++) {
-            int idx = paresFitness[i][0];
-            poblacion[idx] = elite[i];
-            fitness[idx] = fitnessElite[i];
+            double idx = paresFitness[i][0];
+            poblacion[(int)idx] = elite[i];
+            fitness[(int)idx] = fitnessElite[i];
         }
     }
 }

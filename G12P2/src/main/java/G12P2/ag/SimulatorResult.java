@@ -12,21 +12,21 @@ import G12P2.cromosomas.Cromosoma;
  */
 public class SimulatorResult {
 
-    private final int[] mejoresPorGeneracion;
-    private final int[] mejoresAbsolutos;
+    private final double[] mejoresPorGeneracion;
+    private final double[] mejoresAbsolutos;
     private final double[] mediaPorGeneracion;
 
-    private final int mejorFitness;
+    private final double mejorFitness;
     private final Cromosoma mejorCromosoma;
 
     private final int rows;
     private final int cols;
 
     public SimulatorResult(
-        int[] mejoresPorGeneracion,
-        int[] mejoresAbsolutos,
+        double[] mejoresPorGeneracion,
+        double[] mejoresAbsolutos,
         double[] mediaPorGeneracion,
-        int mejorFitness,
+        double mejorFitness,
         Cromosoma mejorCromosoma
     ) {
         this.mejoresPorGeneracion = mejoresPorGeneracion;
@@ -39,12 +39,12 @@ public class SimulatorResult {
     }
 
     // mejor fitness de la población en cada generación
-    public int[] getMejoresPorGeneracion() {
+    public double[] getMejoresPorGeneracion() {
         return mejoresPorGeneracion;
     }
 
     // mejor fitness absoluto acumulado hasta cada generación
-    public int[] getMejoresAbsolutos() {
+    public double[] getMejoresAbsolutos() {
         return mejoresAbsolutos;
     }
 
@@ -54,7 +54,7 @@ public class SimulatorResult {
     }
 
     // valor óptimo obtenido en toda la ejecución
-    public int getMejorFitness() {
+    public double getMejorFitness() {
         return mejorFitness;
     }
 

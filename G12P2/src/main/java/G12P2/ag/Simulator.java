@@ -88,7 +88,7 @@ public class Simulator {
             }
         }
 
-        while (this.generacionActual < this.maxGeneraciones) {
+        while (this.generacionActual < this.maxGeneraciones && !Thread.currentThread().isInterrupted()) {
             generaElite();
             poblacion = seleccion.seleccionar(poblacion, fitness);
             cruce(probCruce);
@@ -124,6 +124,7 @@ public class Simulator {
                     mejorEvaluacion.getCaminos(),
                     mejorEvaluacion.getCromosoma().getGenes()
             );
+            System.out.println(generacionActual + " | " + maxGeneraciones + " | " + mejorFitnessAbsoluto);
 
             mejoresPorGeneracion[generacionActual] = mejorGen;
             mejoresAbsolutos[generacionActual] = mejorFitnessAbsoluto;
@@ -131,19 +132,6 @@ public class Simulator {
 
             generacionActual++;
         }
-
-        resultado = new SimulatorResult(
-            mejoresPorGeneracion,
-            mejoresAbsolutos,
-            mediaPorGeneracion,
-            mejorFitnessAbsoluto,
-            mejorCromosomaAbsoluto
-        );
-    }
-
-    // devuelve todos los resultados de la ejecución
-    public SimulatorResult getResultado() {
-        return resultado;
     }
 
     private void iniciarPoblacion() {

@@ -28,9 +28,11 @@ public class Configuracion extends JPanel{
     private JSpinner porcentajeMutaciones;
     private JComboBox<String> seleccion;
     private JComboBox<String> cruce;
-    private JSpinner auxiliar;
     private JComboBox<String> mutacion;
     private JSpinner elitismo;
+    private JCheckBox memetico;
+    private JButton ejecutar;
+    private JButton cancelar;
 
     //referencia al tabler para actualizarlo
     Tablero tablero;
@@ -48,7 +50,8 @@ public class Configuracion extends JPanel{
             Seleccion seleccion,
             Cruce cruce,
             Mutacion mutacion,
-            double porcentajeElitismo
+            double porcentajeElitismo,
+            boolean memetico
     ){};
 
     public Configuracion(Tablero tablero, Grafica grafica) {
@@ -210,7 +213,7 @@ public class Configuracion extends JPanel{
         add(mutacion, gbc);
         y++;
 
-        // Elitismo
+        //Elitismo
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Elitismo (%):"), gbc);
@@ -220,19 +223,39 @@ public class Configuracion extends JPanel{
         add(elitismo, gbc);
         y++;
 
+        //Memetico
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        add(new JLabel("Memético:"), gbc);
+
+        gbc.gridx = 1;
+        this.memetico = new JCheckBox();
+        add(memetico, gbc);
+        y++;
+
         // Boton de ejecutar
         gbc.gridx = 0;
         gbc.gridy = y;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        //ACCION AL DARLA AL BOTON DE EJECUTAR
-        JButton ejecutar = new JButton("Ejecutar");
-        ejecutar.addActionListener(e -> {
+        this.ejecutar = new JButton("Ejecutar");
+        this.ejecutar.addActionListener(e -> {
             iniciarSimulacion();
         });
 
         add(ejecutar, gbc);
+        y++;
+
+        //boton para cancelar la ejecucion
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        this.cancelar = new JButton("Cancelar");
+        add(cancelar, gbc);
+        this.cancelar.setVisible(false);
 
         generarTablero();
     }
@@ -302,7 +325,10 @@ public class Configuracion extends JPanel{
         }
 
         //SE HACE LA SIGUIENTE SIMULACION EN UN HILO APARTE PARA NO BLOQUEAR LA UI
-        new Thread(() -> {
+        Thread hilo = new Thread(() -> {
+            //desactiva los componentes
+            estadoComponentes(false);
+
             new Simulator(
                     datos.generaciones,
                     datos.poblacion,
@@ -313,10 +339,36 @@ public class Configuracion extends JPanel{
                     datos.cruce,
                     datos.mutacion,
                     supplier,
-                    false, //TODO poner opcion para memetico
+                    datos.memetico,
                     tablero
             );
-        }).start();
+
+            //los vuelve a activar
+            estadoComponentes(true);
+        });
+
+        this.cancelar.addActionListener(e -> {
+           hilo.interrupt();
+           estadoComponentes(true);
+        });
+        hilo.start();
+    }
+
+    private void estadoComponentes(boolean estado) {
+        mapa.setEnabled(estado);
+        numDrones.setEnabled(estado);
+        numCamaras.setEnabled(estado);
+        semilla.setEnabled(estado);
+        poblacion.setEnabled(estado);
+        generaciones.setEnabled(estado);
+        porcentajeCruces.setEnabled(estado);
+        porcentajeMutaciones.setEnabled(estado);
+        seleccion.setEnabled(estado);
+        cruce.setEnabled(estado);
+        mutacion.setEnabled(estado);
+        elitismo.setEnabled(estado);
+        this.ejecutar.setVisible(estado);
+        this.cancelar.setVisible(!estado);
     }
 
     private Datos recogerDatos() {
@@ -412,6 +464,8 @@ public class Configuracion extends JPanel{
         //porcentaje de elitismo
         double elitismoValue = ((int) elitismo.getValue());
 
+        boolean memetico = this.memetico.isSelected();
+
         return new Datos(
                 mapaValue,
                 numDronesValue,
@@ -424,7 +478,8 @@ public class Configuracion extends JPanel{
                 seleccionValue,
                 cruceValue,
                 mutacionValue,
-                elitismoValue
+                elitismoValue,
+                memetico
         );
     }
 }

@@ -12,15 +12,11 @@ public class CromosomaDrones implements Cromosoma {
         // veloz, estándar, pesado, ágil, tanque
         java.util.Arrays.asList(1.5, 1.0, 0.7, 1.2, 0.5)
     );
-
     private int[] genes;
-
-    //numero de drones y numero de camaras
-    private int D, C;
-
+    private int D, C; //numero de drones y camaras
     private Scene scene;
 
-    private static final Random rng = new Random();
+
 
     public CromosomaDrones(int D, Scene scene) {
         this.D = D;
@@ -45,6 +41,7 @@ public class CromosomaDrones implements Cromosoma {
         // separadores
         for (int i = C + 1; i <= C + D - 1; i++) valores.add(i);
 
+        Random rng = new Random();
         Collections.shuffle(valores, rng);
 
         return valores.stream().mapToInt(Integer::intValue).toArray();
@@ -68,6 +65,12 @@ public class CromosomaDrones implements Cromosoma {
 
     public Scene getScene() {
         return scene;
+    }
+    public int getRows() {
+        return 0; //TODO
+    }
+    public int getCols() {
+        return 0; //TODO
     }
 
     @Override

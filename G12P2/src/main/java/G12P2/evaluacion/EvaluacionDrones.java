@@ -7,29 +7,95 @@ import java.util.*;
 
 public class EvaluacionDrones {
 
-    record Nodo(int X, int Y, int coste, int heuristica){}
+    //records
+    record Nodo(int X, int Y, int coste, int heuristica){};
     record Pos(int X, int Y){};
+    record resAestrella(int coste, List<int[]> path){};
+
+    //mapa
     private static int mapa[][];
+    private static int[][] camaras;
 
-    private static Pos fin;
+    public static resEvaluacion evaluar(CromosomaDrones cromosoma) {
 
-    public static int evaluar(Scene scene, CromosomaDrones cromosoma) {
+        //escena
+        Scene scene = cromosoma.getScene();
 
-        //se saca el numero de camaras
+        //inicio, desde donde salen los drones
+        int[] hangar = scene.getInicio();
 
-        //se va iterando y se saca el coste de ir de camara a camara
-        //los drones salen y vuelven a la casilla arriba a la izquierda
+        //se saca el numero de camaras y drones
+        int numCamaras = cromosoma.getNumCamaras();
+        int numDrones = cromosoma.getNumDrones();
 
-        //A* con heurística manhatan?
-
-        //=======================================================
+        //saca el mapa y las posiciones de las camaras
         mapa = scene.getGrid();
-        //fin = new Pos(mapa[0].length - 2, mapa.length - 2);
-        fin = new Pos(4, 6);
-        return aEstrella(new Nodo(1, 1, 0, 0));
+        camaras = scene.getPosCamaras();
+
+        //saca los genes de este cromosoma
+        int[] genes = cromosoma.getGenes();
+
+        //===== empieza la evaluacion =====
+
+        //distancia desde el inicio a la primera camara
+        int current = numCamaras+1;
+        int objective = genes[0];
+        Pos currentPos = new Pos(hangar[0], hangar[1]);
+        Pos objectivePos = new Pos(camaras[objective - 1][1], camaras[objective - 1][0]);
+
+        //lo que se devolvera al final
+        int costeAcumulado = 0;
+        //camino total
+        List<int[]> path = new ArrayList<>();
+        path.add(new int[]{hangar[0], hangar[1]});
+
+        int i = 0;
+        while (i < numCamaras + numDrones - 1) {
+            //posiciones de las camaras
+            //importante primero viene la Y y luego la X en el array de posiciones de las camara
+            //TODO no solo hay que ir desde el inicio al principio sino cada vez que se cambie de dron
+            //TODO falta dividir por la velocidad del dron
+
+            //si se cumple esto se comienza el recorrido de un dron
+            if (current > numCamaras)
+                currentPos = new Pos(hangar[0], hangar[1]);
+            else
+                currentPos = new Pos(camaras[current - 1][1], camaras[current - 1][0]);
+
+            //si se cumple esto se termina el recorrido del dron
+            if (objective > numCamaras)
+                objectivePos = new Pos(hangar[0], hangar[1]);
+            else
+                objectivePos = new Pos(camaras[objective - 1][1], camaras[objective - 1][0]);
+
+            //se suma el coste y se suma registra el camino
+            resAestrella res = aEstrella(currentPos, objectivePos);
+            costeAcumulado += res.coste;
+            path.addAll(res.path);
+
+            //camara actual y camara objetivo actual
+            current = genes[i];
+            if (i+1 != genes.length)
+                objective = genes[i + 1];
+            else
+                objective = numCamaras+1;
+
+            i++;
+        }
+        resAestrella res = aEstrella(objectivePos, new Pos(hangar[0], hangar[1]));
+        costeAcumulado += res.coste;
+        path.addAll(res.path);
+
+        List<List<int[]>> aux = new ArrayList<>();
+        aux.add(path);
+
+        return new resEvaluacion(
+                costeAcumulado,
+                aux
+        );
     }
 
-    private static int aEstrella(Nodo ini) {
+    private static resAestrella aEstrella(Pos ini, Pos fin) {
 
         //para parar la busqueda cuando se encuentre el objetivo
         boolean encontrado = false;
@@ -48,7 +114,8 @@ public class EvaluacionDrones {
         HashMap<Pos, Integer> costes = new HashMap<Pos, Integer>();
 
         //se inicializa
-        queue.add(ini);
+        Nodo nodoIni = new Nodo(ini.X,ini.Y,0,0);
+        queue.add(nodoIni);
         costes.put(new Pos(ini.X, ini.Y), 0);
 
         while (!queue.isEmpty() && !encontrado) {
@@ -56,7 +123,7 @@ public class EvaluacionDrones {
             Nodo nodo = queue.poll();
 
             //se mira cada uno de sus adyacentes
-            for (Nodo vecino : adyacentes(nodo)) {
+            for (Nodo vecino : adyacentes(nodo, fin)) {
                 //se encuentra el objetivo y se para la busqueda
                 if (vecino.X == fin.X && vecino.Y == fin.Y) {
                     encontrado = true;
@@ -70,7 +137,7 @@ public class EvaluacionDrones {
                     continue;
 
                 //si ya hay un nodo con esta posicion y menor f en la cola se omite este nodo
-                int heuristica = heuristicaManhattan(vecino.X, vecino.Y);
+                int heuristica = heuristicaManhattan(vecino.X, vecino.Y, fin);
                 int total = vecino.coste + vecino.heuristica;
                 if (costes.containsKey(new Pos(vecino.X, vecino.Y)) && costes.get(new Pos(vecino.X, vecino.Y)) < total)
                     continue;
@@ -83,67 +150,49 @@ public class EvaluacionDrones {
             visited[nodo.Y][nodo.X] = true;
         }
 
-//        for (Map.Entry<Pos, Pos> entry : parent.entrySet()) {
-//            System.out.println("nodo: " + entry.getKey().X + " " + entry.getKey().Y + ", previo: " +
-//                    entry.getValue().X + " " + entry.getValue().Y);
-//        }
-//
-//        System.out.println("\n");
-
-        if (encontrado && objetivo != null) {
-            List<Pos> camino = new ArrayList<>();
-            Pos actual = new Pos(objetivo.X, objetivo.Y);
-
-            while (actual != null) {
-                camino.add(actual);
-                actual = parent.get(actual);
-            }
-
-            Collections.reverse(camino);
-
-            System.out.println("Camino encontrado (" + camino.size() + " pasos):");
-            for (Pos p : camino) {
-                System.out.println("  -> (" + p.X + ", " + p.Y + ")");
-            }
+        //voy desde el objetivo hasta el inicio e invierto para reconstruir el objetivo
+        List<int[]> path = new ArrayList<>();
+        Pos current = new Pos(objetivo.X, objetivo.Y);
+        while (current.X != ini.X || current.Y != ini.Y) {
+            path.add(new int[]{current.X,current.Y});
+            current = parent.get(new Pos(current.X,current.Y));
         }
+        Collections.reverse(path);
 
-        System.out.println("\nCoste: " + objetivo.coste);
-        return objetivo.coste;
+        return new resAestrella(objetivo.coste, path);
     }
 
-    private static Set<Nodo> adyacentes(Nodo nodo) {
+    private static Set<Nodo> adyacentes(Nodo nodo, Pos fin) {
         Set<Nodo> vecinos = new HashSet<>();
-
-        //TODO sumar la penalizacion por pasar por encima de una camara
 
         //ARRIBA
         if (posValida(mapa, nodo.X, nodo.Y - 1)) {
-            int coste = mapa[nodo.Y - 1][nodo.X];
-            int heuristica = heuristicaManhattan(nodo.X, nodo.Y - 1);
+            int coste = costeCasilla(nodo.X, nodo.Y - 1, fin);
+            int heuristica = heuristicaManhattan(nodo.X, nodo.Y - 1, fin);
             Nodo vecino = new Nodo(nodo.X, nodo.Y - 1, nodo.coste + coste, heuristica);
             vecinos.add(vecino);
         }
 
         //DERECHA
         if (posValida(mapa, nodo.X + 1, nodo.Y)) {
-            int coste = mapa[nodo.Y][nodo.X + 1];
-            int heuristica = heuristicaManhattan(nodo.X + 1, nodo.Y);
+            int coste = costeCasilla(nodo.X + 1, nodo.Y, fin);
+            int heuristica = heuristicaManhattan(nodo.X + 1, nodo.Y, fin);
             Nodo vecino = new Nodo(nodo.X + 1, nodo.Y, nodo.coste + coste, heuristica);
             vecinos.add(vecino);
         }
 
         //ABAJO
         if (posValida(mapa, nodo.X, nodo.Y + 1)) {
-            int coste = mapa[nodo.Y + 1][nodo.X];
-            int heuristica = heuristicaManhattan(nodo.X, nodo.Y + 1);
+            int coste = costeCasilla(nodo.X, nodo.Y + 1, fin);
+            int heuristica = heuristicaManhattan(nodo.X, nodo.Y + 1, fin);
             Nodo vecino = new Nodo(nodo.X, nodo.Y + 1, nodo.coste + coste, heuristica);
             vecinos.add(vecino);
         }
 
         //IZQUIERDA
         if (posValida(mapa, nodo.X - 1, nodo.Y)) {
-            int coste = mapa[nodo.Y][nodo.X - 1];
-            int heuristica = heuristicaManhattan(nodo.X - 1, nodo.Y);
+            int coste = costeCasilla(nodo.X - 1, nodo.Y, fin);
+            int heuristica = heuristicaManhattan(nodo.X - 1, nodo.Y, fin);
             Nodo vecino = new Nodo(nodo.X - 1, nodo.Y, nodo.coste + coste, heuristica);
             vecinos.add(vecino);
         }
@@ -169,7 +218,20 @@ public class EvaluacionDrones {
         return true;
     }
 
-    private static int heuristicaManhattan(int X, int Y) {
+    private static int costeCasilla(int X, int Y, Pos fin) {
+        //si es la camara objetivo avanzar solo cuesta 1
+        if (fin.X == X && fin.Y == Y)
+            return 1;
+
+        //si es una camara que no es el objetivo avanzar a esa casilla es penalizado con 500 de coste
+        if (mapa[Y][X] == -1)
+            return 500;
+
+        //de otra manera se devuelve el valor que esta presenten en la matriz del mapa
+        return mapa[Y][X];
+    }
+
+    private static int heuristicaManhattan(int X, int Y, Pos fin) {
         return Math.abs(X - fin.X) + Math.abs(Y - fin.Y);
     }
 }

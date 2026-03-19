@@ -1,10 +1,13 @@
 package G12P2.ag;
 
+import G12P2.Scene;
 import G12P2.ag.cruce.Cruce;
 import G12P2.ag.mutacion.Mutacion;
 import G12P2.ag.seleccion.Seleccion;
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
+import G12P2.ui.Tablero;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -47,7 +50,8 @@ public class Simulator {
         Cruce cruce,
         Mutacion mutacion,
         Supplier<Cromosoma> factoriaCromosomas,
-        boolean memetico
+        boolean memetico,
+        Tablero tablero
     ) {
         this.memetico = memetico;
         this.maxGeneraciones = maxGeneraciones;
@@ -103,6 +107,13 @@ public class Simulator {
                     mejorCromosomaAbsoluto = poblacion[i].copia();
                 }
             }
+
+            //aqui manda el resultado a al tablero y la grafica
+            Scene sceneMejor = mejorCromosomaAbsoluto.getScene();
+            int numCamaras = sceneMejor.getNumCamaras();
+            int[][] gridMejor = sceneMejor.getGrid();
+            int[][] camarasMejor = sceneMejor.getPosCamaras();
+            tablero.setTablero(gridMejor, camarasMejor, mejorFitnessAbsoluto, null);
 
             mejoresPorGeneracion[generacionActual] = mejorGen;
             mejoresAbsolutos[generacionActual] = mejorFitnessAbsoluto;

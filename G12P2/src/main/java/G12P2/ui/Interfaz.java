@@ -16,11 +16,7 @@ public class Interfaz extends JFrame {
         Tablero tablero = new Tablero();
 
         //panel de la grafica
-        Grafica grafica = new Grafica(
-            new int[]{1,2,3},
-            new int[]{1,2,3},
-            new double[]{1,2,3}
-        );
+        Grafica grafica = new Grafica();
 
         Configuracion configuracion = new Configuracion(tablero, grafica);
 

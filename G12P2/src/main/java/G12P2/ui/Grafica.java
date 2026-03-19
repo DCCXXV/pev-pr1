@@ -1,42 +1,32 @@
 package G12P2.ui;
 
 import org.math.plot.Plot2DPanel;
+import org.math.plot.plots.LinePlot;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class Grafica extends JPanel {
 
     private Plot2DPanel plot;
 
-    public Grafica(int[] mejoresPorGeneracion, int[] mejoresAbsolutos, double[] mediaPorGeneracion) {
+    int generaciones;
+    LinePlot plotMejorGen;
+    LinePlot plotMejorAbs;
+    LinePlot plotMedia;
 
-        int generaciones = mejoresPorGeneracion.length;
+    double[][] mejoresPorGeneracion;
+    double[][] mejoresAbsolutos;
+    double[][] mediaPorGeneracion;
 
-        // Eje X: generaciones
-        double[] x = new double[generaciones];
-        for (int i = 0; i < generaciones; i++) {
-            x[i] = i;
-        }
-
-        // Convertir int[] a double[]
-        double[] mejoresGen = toDouble(mejoresPorGeneracion);
-        double[] mejoresAbs = toDouble(mejoresAbsolutos);
-
-        // Crear el panel de grafica
+    public Grafica() {
         plot = new Plot2DPanel();
         plot.addLegend("SOUTH");
-
-        // Añadir curvas
-        plot.addLinePlot("Mejor por generacion", x, mejoresGen);
-        plot.addLinePlot("Mejor absoluto", x, mejoresAbs);
-        plot.addLinePlot("Media por generacion", x, mediaPorGeneracion);
+        plot.setAxisLabels("Generacion", "Fitness");
 
         setLayout(new BorderLayout());
         add(plot, BorderLayout.CENTER);
-        plot.setAxisLabels("Generacion", "Fittness");
-
-        add(plot);
     }
 
     private double[] toDouble(int[] array) {
@@ -47,24 +37,59 @@ public class Grafica extends JPanel {
         return result;
     }
 
-    public void actualizarGrafica(int[] nuevosMejoresGen, int[] nuevosMejoresAbs, double[] nuevaMediaGen) {
-        // Convertir int[] a double[]
-        double[] mejoresGen = toDouble(nuevosMejoresGen);
-        double[] mejoresAbs = toDouble(nuevosMejoresAbs);
+    public void setGeneraciones(int generaciones) {
 
-        int generaciones = nuevosMejoresGen.length;
+        //limpio la tabla de los datos que tuviera antes
+        plot.removeAllPlots();
+
+        //numero de generaciones para fijar el eje x
+        this.generaciones = generaciones;
+
+        mejoresPorGeneracion = new double[generaciones][2];
+        mejoresAbsolutos = new double[generaciones][2];
+        mediaPorGeneracion = new double[generaciones][2];
+
+        // eje X
         double[] x = new double[generaciones];
         for (int i = 0; i < generaciones; i++) x[i] = i;
 
-        // Limpiar todas las curvas
-        plot.removeAllPlots();
+        for (int i = 0; i < generaciones; i++) {
+            mejoresPorGeneracion[i][0] = i;
+            mejoresPorGeneracion[i][1] = 0;
 
-        // Añadir nuevas curvas
-        plot.addLinePlot("Mejor por generacion", x, mejoresGen);
-        plot.addLinePlot("Mejor absoluto", x, mejoresAbs);
-        plot.addLinePlot("Media por generacion", x, nuevaMediaGen);
+            mejoresAbsolutos[i][0] = i;
+            mejoresAbsolutos[i][1] = 0;
 
-        // Forzar repaint para que se vea actualizado
+            mediaPorGeneracion[i][0] = i;
+            mediaPorGeneracion[i][1] = 0;
+        }
+
+        plotMejorGen = new LinePlot("Mejor por generacion", Color.RED, null, mejoresPorGeneracion);
+        plotMejorAbs = new LinePlot("Mejor absoluto", Color.BLUE, null, mejoresAbsolutos);
+        plotMedia = new LinePlot("Media por generacion", Color.GREEN, null, mediaPorGeneracion);
+
+        // fijar límites
+        plot.setFixedBounds(0, 0, generaciones);
+
+        plot.addPlot(plotMejorGen);
+        plot.addPlot(plotMejorAbs);
+        plot.addPlot(plotMedia);
+    }
+
+    public void actualizarGrafica(int generacion, double mejorGen, double mejorAbsoluto, double media) {
+
+        // actualizar solo la Y (la X ya es i)
+        mejoresPorGeneracion[generacion][1] = mejorGen;
+        mejoresAbsolutos[generacion][1] = mejorAbsoluto;
+        mediaPorGeneracion[generacion][1] = media;
+
+        plotMejorGen.setData(mejoresPorGeneracion);
+        plotMejorAbs.setData(mejoresAbsolutos);
+        plotMedia.setData(mediaPorGeneracion);
+
+        plot.setFixedBounds(0, 0, generaciones);
+        plot.setFixedBounds(1, 0, 1500);
         plot.repaint();
+        SwingUtilities.invokeLater(plot::repaint);
     }
 }

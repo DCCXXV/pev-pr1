@@ -34,8 +34,9 @@ public class Configuracion extends JPanel{
     private JButton ejecutar;
     private JButton cancelar;
 
-    //referencia al tabler para actualizarlo
+    //referencia al tablero y la grafica para actualizarlos
     Tablero tablero;
+    Grafica grafica;
 
     //record con los datos que has seleccionado
     private record Datos(
@@ -56,8 +57,11 @@ public class Configuracion extends JPanel{
 
     public Configuracion(Tablero tablero, Grafica grafica) {
 
+        //me guardo las referencias
         this.tablero = tablero;
+        this.grafica = grafica;
 
+        //layout del panel
         setLayout(new GridBagLayout());
 
         /*
@@ -328,6 +332,7 @@ public class Configuracion extends JPanel{
         Thread hilo = new Thread(() -> {
             //desactiva los componentes
             estadoComponentes(false);
+            this.grafica.setGeneraciones(datos.generaciones);
 
             new Simulator(
                     datos.generaciones,
@@ -340,7 +345,8 @@ public class Configuracion extends JPanel{
                     datos.mutacion,
                     supplier,
                     datos.memetico,
-                    tablero
+                    tablero,
+                    grafica
             );
 
             //los vuelve a activar

@@ -6,6 +6,7 @@ import G12P2.ag.seleccion.Seleccion;
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
 import G12P2.evaluacion.ResEvaluacion;
+import G12P2.ui.Grafica;
 import G12P2.ui.Tablero;
 
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class Simulator {
         Mutacion mutacion,
         Supplier<Cromosoma> factoriaCromosomas,
         boolean memetico,
-        Tablero tablero
+        Tablero tablero,
+        Grafica grafica
     ) {
         this.memetico = memetico;
         this.maxGeneraciones = maxGeneraciones;
@@ -117,6 +119,10 @@ public class Simulator {
                 }
             }
 
+            //SE MANDA EL RESULTADO A LA GRAFICA
+            double media = suma / tamPoblacion;
+            grafica.actualizarGrafica(generacionActual, mejorGen, mejorFitnessAbsoluto, media);
+
             //SE MANDA EL RESULTADO AL TABLERO
             tablero.setMejor(
                     mejorEvaluacion.getFitness(),
@@ -125,10 +131,6 @@ public class Simulator {
                     mejorEvaluacion.getCromosoma().getGenes()
             );
             System.out.println(generacionActual + " | " + maxGeneraciones + " | " + mejorFitnessAbsoluto);
-
-            mejoresPorGeneracion[generacionActual] = mejorGen;
-            mejoresAbsolutos[generacionActual] = mejorFitnessAbsoluto;
-            mediaPorGeneracion[generacionActual] = suma / tamPoblacion;
 
             generacionActual++;
         }

@@ -98,11 +98,11 @@ public class Simulator {
             evaluarPoblacion();
 
             // recoger stats de esta generacion
-            double mejorGen = Double.MIN_VALUE;
+            double mejorGen = Double.MAX_VALUE;
             double suma = 0;
             for (int i = 0; i < tamPoblacion; i++) {
                 suma += fitness[i];
-                if (fitness[i] > mejorGen) {
+                if (fitness[i] < mejorGen) {
                     mejorGen = fitness[i];
                 }
                 if (fitness[i] < mejorFitnessAbsoluto) {
@@ -220,7 +220,7 @@ public class Simulator {
 
                     // si "desenredar" la ruta mejora el fitness, nos lo quedamos
                     double nuevaFit = clon.evaluar().getFitness();
-                    if (nuevaFit > fitActual) {
+                    if (nuevaFit < fitActual) {
                         poblacion[k] = clon;
                         fitness[k] = nuevaFit;
                         ind = clon;

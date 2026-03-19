@@ -1,18 +1,15 @@
 package G12P2.ag;
 
-import G12P2.Scene;
 import G12P2.ag.cruce.Cruce;
 import G12P2.ag.mutacion.Mutacion;
 import G12P2.ag.seleccion.Seleccion;
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
-import G12P2.evaluacion.EvaluacionDrones;
-import G12P2.evaluacion.resEvaluacion;
+import G12P2.evaluacion.ResEvaluacion;
 import G12P2.ui.Tablero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -33,6 +30,7 @@ public class Simulator {
     private int tamPoblacion;
     private Supplier<Cromosoma> factoriaCromosomas;
     private double[] fitness;
+    private ResEvaluacion[] resEvaluacion;
 
     private Cromosoma[] elite;
     private double[] fitnessElite;
@@ -81,6 +79,7 @@ public class Simulator {
         // mejor absoluto inicial (población 0, antes del primer bucle)
         double mejorFitnessAbsoluto = Integer.MIN_VALUE;
         Cromosoma mejorCromosomaAbsoluto = null;
+        ResEvaluacion mejorEvaluacion = null;
         for (int i = 0; i < tamPoblacion; i++) {
             if (fitness[i] > mejorFitnessAbsoluto) {
                 mejorFitnessAbsoluto = fitness[i];
@@ -108,16 +107,17 @@ public class Simulator {
                 if (fitness[i] > mejorFitnessAbsoluto) {
                     mejorFitnessAbsoluto = fitness[i];
                     mejorCromosomaAbsoluto = poblacion[i].copia();
+                    mejorEvaluacion = this.resEvaluacion[i];
                 }
             }
 
-            //aqui manda el resultado a al tablero y la grafica
-            Scene sceneMejor = mejorCromosomaAbsoluto.getScene();
-            int numCamaras = sceneMejor.getNumCamaras();
-            int[][] gridMejor = sceneMejor.getGrid();
-            int[][] camarasMejor = sceneMejor.getPosCamaras();
-            //TODO que de la evaluacion saque los datos y los envie aqui
-            //tablero.setMejor();
+            //SE MANDA EL RESULTADO AL TABLERO
+            tablero.setMejor(
+                    mejorEvaluacion.getFitness(),
+                    mejorEvaluacion.getTiemposDrones(),
+                    mejorEvaluacion.getCaminos(),
+                    mejorEvaluacion.getCromosoma().getGenes()
+            );
 
             mejoresPorGeneracion[generacionActual] = mejorGen;
             mejoresAbsolutos[generacionActual] = mejorFitnessAbsoluto;
@@ -148,9 +148,11 @@ public class Simulator {
     }
 
     private void evaluarPoblacion() {
-        fitness = new double[tamPoblacion];
+        this.fitness = new double[tamPoblacion];
+        this.resEvaluacion = new ResEvaluacion[tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++) {
-            resEvaluacion res = poblacion[i].evaluar();
+            ResEvaluacion res = poblacion[i].evaluar();
+            this.resEvaluacion[i] = res;
             fitness[i] = res.getFitness();
         }
     }

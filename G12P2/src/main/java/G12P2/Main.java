@@ -1,14 +1,11 @@
 package G12P2;
 
-import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
 import G12P2.evaluacion.EvaluacionDrones;
-import G12P2.evaluacion.resEvaluacion;
-import G12P2.ui.Interfaz;
+import G12P2.evaluacion.ResEvaluacion;
 import G12P2.ui.Tablero;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class Main {
@@ -39,7 +36,7 @@ public class Main {
         Supplier<CromosomaDrones> supplier = () -> new CromosomaDrones(5, scene);
         CromosomaDrones cromosomaDrones = supplier.get();
         cromosomaDrones.setGenes(new int[]{1,9,2,10,3,11,4,12,5,6,7,8});
-        resEvaluacion res = EvaluacionDrones.evaluar(cromosomaDrones);
+        ResEvaluacion res = EvaluacionDrones.evaluar(cromosomaDrones);
         tablero.setMejor(res.getFitness(), res.getTiemposDrones(), res.getCaminos(), res.getCromosoma().getGenes());
         tablero.repaint();
     }

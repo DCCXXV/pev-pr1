@@ -1,15 +1,7 @@
 package G12P2.ui;
 
-import G12P2.Main;
-import G12P2.Mapas;
-import G12P2.Scene;
-import G12P2.cromosomas.CromosomaDrones;
-import G12P2.evaluacion.EvaluacionDrones;
-import G12P2.evaluacion.resEvaluacion;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Supplier;
 
 public class Interfaz extends JFrame {
 

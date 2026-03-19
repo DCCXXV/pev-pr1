@@ -3,12 +3,13 @@ package G12P2.ui;
 import G12P2.Mapas;
 import G12P2.Scene;
 import G12P2.ag.Simulator;
-import G12P2.ag.cruce.Cruce;
+import G12P2.ag.cruce.*;
 import G12P2.ag.mutacion.Mutacion;
+import G12P2.ag.mutacion.MutacionInsercion;
+import G12P2.ag.mutacion.MutacionIntercambio;
 import G12P2.ag.seleccion.*;
+import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
-import G12P2.evaluacion.EvaluacionDrones;
-import G12P2.evaluacion.resEvaluacion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
 
 public class Configuracion extends JPanel{
 
+    //componentes de la configuracion
     private JComboBox<String> mapa;
     private JSpinner numDrones;
     private JSpinner numCamaras;
@@ -30,6 +32,9 @@ public class Configuracion extends JPanel{
     private JComboBox<String> mutacion;
     private JSpinner elitismo;
 
+    //referencia al tabler para actualizarlo
+    Tablero tablero;
+
     //record con los datos que has seleccionado
     private record Datos(
             String mapa,
@@ -38,15 +43,18 @@ public class Configuracion extends JPanel{
             int semilla,
             int poblacion,
             int generaciones,
-            int porcentajeCruces,
-            int porcentajeMutaciones,
+            double porcentajeCruces,
+            double porcentajeMutaciones,
             Seleccion seleccion,
             Cruce cruce,
             Mutacion mutacion,
-            int porcentajeElitismo
+            double porcentajeElitismo
     ){};
 
     public Configuracion(Tablero tablero, Grafica grafica) {
+
+        this.tablero = tablero;
+
         setLayout(new GridBagLayout());
 
         /*
@@ -69,7 +77,7 @@ public class Configuracion extends JPanel{
         y++;
 
         mapa.addActionListener(e -> {
-            generarTablero(tablero);
+            generarTablero();
         });
 
         // Numero de drones
@@ -93,7 +101,7 @@ public class Configuracion extends JPanel{
         y++;
 
         this.numCamaras.addChangeListener(e -> {
-            generarTablero(tablero);
+            generarTablero();
         });
 
         // Semilla
@@ -107,7 +115,7 @@ public class Configuracion extends JPanel{
         y++;
 
         this.semilla.addChangeListener(e -> {
-            generarTablero(tablero);
+            generarTablero();
         });
 
         // Poblacion
@@ -162,7 +170,8 @@ public class Configuracion extends JPanel{
                         "Torneo",
                         "Truncamiento",
                         "Estocastico",
-                        "Restos"
+                        "Restos",
+                        "Ranking"
                 });
         add(seleccion, gbc);
         y++;
@@ -175,12 +184,13 @@ public class Configuracion extends JPanel{
         gbc.gridx = 1;
         this.cruce = new JComboBox<>(
                 new String[]{
-                        "Aritmetico",
-                        "BlxAlpha",
-                        "MonoPuntoBin",
-                        "MonoPuntoReal",
-                        "UniformeBin",
-                        "UniformeReal"
+                        "CruceA",
+                        "CruceCO",
+                        "CruceCX",
+                        "CruceERX",
+                        "CruceOX",
+                        "CruceOXPP",
+                        "CrucePMX"
                 });
         add(cruce, gbc);
         y++;
@@ -203,9 +213,8 @@ public class Configuracion extends JPanel{
         gbc.gridx = 1;
         this.mutacion = new JComboBox<>(
                 new String[]{
-                        "Bit",
-                        "Gaussiana",
-                        "Gen",
+                        "Insercion",
+                        "Intercambio"
                 });
         add(mutacion, gbc);
         y++;
@@ -234,10 +243,10 @@ public class Configuracion extends JPanel{
 
         add(ejecutar, gbc);
 
-        generarTablero(tablero);
+        generarTablero();
     }
 
-    private void generarTablero(Tablero tablero) {
+    private void generarTablero() {
         String seleccionado = (String) this.mapa.getSelectedItem();
         int[][] mapa = Mapas.getMapa(seleccionado);
         int[] inicio = Mapas.getInicio(seleccionado);
@@ -261,24 +270,63 @@ public class Configuracion extends JPanel{
         Scene scene = new Scene(mapa, inicio, datos.numCamaras, datos.semilla);
 
         //genero el supplier de cromosomas con el numero de drones y la escena ya creada
-        Supplier<CromosomaDrones> supplier = () -> new CromosomaDrones(datos.numDrones, scene);
+        Supplier<Cromosoma> supplier = () -> new CromosomaDrones(datos.numDrones, scene);
 
-        /*
-        //TODO al iniciar la simulacion se le pasa el tablero tambien
+        //metodo de cruce
+        String metodoC = (String) cruce.getSelectedItem();
+        Cruce metodoCruce = null;
+        switch (metodoC) {
+            case "CruceA":
+                metodoCruce = new CruceA();
+                break;
+            case "CruceCO":
+                metodoCruce = new CruceCO();
+                break;
+            case "CruceCX":
+                metodoCruce = new CruceCX();
+                break;
+            case "CruceERX":
+                metodoCruce = new CruceERX();
+                break;
+            case "CruceOX":
+                metodoCruce = new CruceOX();
+                break;
+            case "CruceOXPP":
+                metodoCruce = new CruceOXPP();
+                break;
+            case "CrucePMX":
+                metodoCruce = new CrucePMX();
+                break;
+        }
+
+        String metodoM = (String) mutacion.getSelectedItem();
+        Mutacion metodoMutacion = null;
+        switch (metodoM) {
+            case "Insercion":
+                metodoMutacion = new MutacionInsercion();
+                break;
+            case "Intercambio":
+                metodoMutacion = new MutacionIntercambio();
+                break;
+        }
+
         //SE HACE LA SIGUIENTE SIMULACION
         Simulator simulator = new Simulator(
-                numGen,
-                individuos,
-                porCruces / 100.0,
-                porMutaciones / 100.0,
-                porElitismo,
-                metodoSeleccion,
-                metodoCruce,
-                metodoMutacion,
-                supplier
+                datos.generaciones,
+                datos.poblacion,
+                datos.porcentajeCruces,
+                datos.porcentajeMutaciones,
+                (int) datos.porcentajeElitismo,
+                datos.seleccion,
+                datos.cruce,
+                datos.mutacion,
+                supplier,
+                false, //TODO poner opcion para memetico
+                tablero
         );
 
         //SE MUESTRAN LOS DATOS
+        /*
         SimulatorResult result = simulator.getResultado();
         if (!modoPonderado)
             tablero.setTablero(result.getMapa(), null, result.getMejorFitness());
@@ -318,10 +366,10 @@ public class Configuracion extends JPanel{
         int generacionesValue = (int) generaciones.getValue();
 
         //porcentaje de cruces
-        int porCrucesValue = (int) porcentajeCruces.getValue();
+        double porCrucesValue = ((int)porcentajeCruces.getValue()) / 100;
 
         //porcentaje de mutaciones
-        int porMutaciones = (int) porcentajeMutaciones.getValue();
+        int porMutaciones = ((int)porcentajeMutaciones.getValue()) / 100;
 
         //metodo de seleccion
         String seleccionAux = (String) seleccion.getSelectedItem();
@@ -342,57 +390,53 @@ public class Configuracion extends JPanel{
             case "Restos":
                 seleccionValue = new Restos();
                 break;
+            case "Ranking":
+                seleccionValue = new Ranking();
+                break;
         }
 
         //metodo de cruce
         String cruceAux = (String) cruce.getSelectedItem();
         Cruce cruceValue = null;
         //TODO poner los cruces de esta practica
-        /*
         switch (cruceAux) {
-            case "Aritmetico":
-                cruceValue = new CruceAritmetico();
+            case "CruceA":
+                cruceValue = new CruceA();
                 break;
-            case "BlxAlpha":
-                double alpha = ((Number) auxiliar.getValue()).doubleValue() / 100;
-                cruceValue = new CruceBlxAlpha(alpha);
+            case "CruceCO":
+                cruceValue = new CruceCO();
                 break;
-            case "MonoPuntoBin":
-                cruceValue = new CruceMonopuntoBin();
+            case "CruceCX":
+                cruceValue = new CruceCX();
                 break;
-            case "MonoPuntoReal":
-                cruceValue = new CruceMonopuntoReal();
+            case "CruceERX":
+                cruceValue = new CruceERX();
                 break;
-            case "UniformeBin":
-                double probBin = ((Number) auxiliar.getValue()).doubleValue() / 100;
-                cruceValue = new CruceUniformeBin(probBin);
+            case "CruceOX":
+                cruceValue = new CruceOX();
                 break;
-            case "UniformeReal":
-                double probReal = ((Number) auxiliar.getValue()).doubleValue() / 100;
-                cruceValue = new CruceUniformeReal(probReal);
+            case "CruceOXPP":
+                cruceValue = new CruceOXPP();
+                break;
+            case "CrucePMX":
+                cruceValue = new CrucePMX();
+                break;
         }
-        */
 
         //metodo de mutacion
         String mutacionAux = (String) mutacion.getSelectedItem();
         Mutacion mutacionValue = null;
-        //TODO poner las mutaciones que faltan
-        /*
         switch (mutacionAux) {
-            case "Bit":
-                mutacionValue = new MutacionBit();
+            case "Insercion":
+                mutacionValue = new MutacionInsercion();
                 break;
-            case "Gaussiana":
-                mutacionValue = new MutacionGaussianaReal();
-                break;
-            case "Gen":
-                mutacionValue = new MutacionGen();
+            case "Intercambio":
+                mutacionValue = new MutacionIntercambio();
                 break;
         }
-        */
 
         //porcentaje de elitismo
-        int elitismoValue = (int) elitismo.getValue();
+        double elitismoValue = ((int) elitismo.getValue());
 
         return new Datos(
                 mapaValue,

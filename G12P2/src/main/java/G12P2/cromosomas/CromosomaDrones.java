@@ -1,6 +1,9 @@
 package G12P2.cromosomas;
 
 import G12P2.Scene;
+import G12P2.evaluacion.EvaluacionDrones;
+import G12P2.evaluacion.ResEvaluacion;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,8 +86,8 @@ public class CromosomaDrones implements Cromosoma {
     }
 
     @Override
-    public int evaluar() {
-        return 0; // TODO
+    public ResEvaluacion evaluar() {
+        return EvaluacionDrones.evaluar(this);
     }
 
     @Override

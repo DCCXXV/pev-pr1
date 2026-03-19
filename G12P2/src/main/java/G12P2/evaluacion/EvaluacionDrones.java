@@ -16,7 +16,7 @@ public class EvaluacionDrones {
     private static int mapa[][];
     private static int[][] camaras;
 
-    public static resEvaluacion evaluar(CromosomaDrones cromosoma) {
+    public static ResEvaluacion evaluar(CromosomaDrones cromosoma) {
 
         //escena
         Scene scene = cromosoma.getScene();
@@ -101,7 +101,7 @@ public class EvaluacionDrones {
             }
         }
 
-        return new resEvaluacion(
+        return new ResEvaluacion(
                 max,
                 costesReales,
                 caminos,

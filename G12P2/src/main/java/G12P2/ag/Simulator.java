@@ -84,6 +84,7 @@ public class Simulator {
             if (fitness[i] > mejorFitnessAbsoluto) {
                 mejorFitnessAbsoluto = fitness[i];
                 mejorCromosomaAbsoluto = poblacion[i].copia();
+                mejorEvaluacion = this.resEvaluacion[i];
             }
         }
 

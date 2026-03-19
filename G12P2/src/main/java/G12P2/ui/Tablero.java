@@ -172,42 +172,55 @@ public class Tablero extends JPanel {
         g2.drawString("Tiempos por Dron: ", textX, textY);
         textY += 15;
 
-        //Luego cada dron con su color
+        //Luego cada dron en su propia línea con su color
         for (int i = 0; i < this.tiemposDrones.length; i++) {
             String texto = drones[i] + String.format("%.2f", this.tiemposDrones[i]);
             g2.setColor(coloresDrones[i]);
             g2.drawString(texto, textX, textY);
-            textX += fm.stringWidth(texto);
+            textY += 15;
         }
 
         // Restaurar color por defecto
-        textY += 25;
+        textY += 10;
         g2.setColor(Color.BLACK);
 
-        //CROMOSOMA
+        //CROMOSOMA con wrap de línea
         textX = offsetX;
-        g2.drawString("Cromosoma: [ ", textX, textY);
-        textX += fm.stringWidth("Cromosoma: [");
+        int maxX = getWidth() - 5;
+        String header = "Cromosoma: [ ";
+        g2.drawString(header, textX, textY);
+        textX += fm.stringWidth(header);
 
         int colorDron = 0;
         for (int i : cromosoma) {
             if (i > camaras.length) {
                 String texto = " |";
                 g2.setColor(Color.BLACK);
+                if (textX + fm.stringWidth(texto) > maxX) {
+                    textY += 15;
+                    textX = offsetX;
+                }
                 g2.drawString(texto, textX, textY);
                 textX += fm.stringWidth(texto);
                 colorDron++;
                 continue;
             }
-            String texto = " " + String.valueOf(i);
+            String texto = " " + i;
             g2.setColor(coloresDrones[colorDron]);
+            if (textX + fm.stringWidth(texto) > maxX) {
+                textY += 15;
+                textX = offsetX;
+            }
             g2.drawString(texto, textX, textY);
             textX += fm.stringWidth(texto);
         }
 
         g2.setColor(Color.BLACK);
+        if (textX + fm.stringWidth(" ]") > maxX) {
+            textY += 15;
+            textX = offsetX;
+        }
         g2.drawString(" ]", textX, textY);
-        textX += fm.stringWidth(" ]");
     }
 
     private void pintarLineas(List<List<int[]>> rutasDrones) {
@@ -257,5 +270,6 @@ public class Tablero extends JPanel {
         this.tiemposDrones = tiemposDrones;
         this.rutasDrones = rutasDrones;
         this.cromosoma = Cromosoma;
+        SwingUtilities.invokeLater(this::repaint);
     }
 }

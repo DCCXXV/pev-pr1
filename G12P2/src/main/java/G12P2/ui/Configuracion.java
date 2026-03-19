@@ -300,20 +300,22 @@ public class Configuracion extends JPanel{
                 break;
         }
 
-        //SE HACE LA SIGUIENTE SIMULACION
-        Simulator simulator = new Simulator(
-                datos.generaciones,
-                datos.poblacion,
-                datos.porcentajeCruces,
-                datos.porcentajeMutaciones,
-                (int) datos.porcentajeElitismo,
-                datos.seleccion,
-                datos.cruce,
-                datos.mutacion,
-                supplier,
-                false, //TODO poner opcion para memetico
-                tablero
-        );
+        //SE HACE LA SIGUIENTE SIMULACION EN UN HILO APARTE PARA NO BLOQUEAR LA UI
+        new Thread(() -> {
+            new Simulator(
+                    datos.generaciones,
+                    datos.poblacion,
+                    datos.porcentajeCruces,
+                    datos.porcentajeMutaciones,
+                    (int) datos.porcentajeElitismo,
+                    datos.seleccion,
+                    datos.cruce,
+                    datos.mutacion,
+                    supplier,
+                    false, //TODO poner opcion para memetico
+                    tablero
+            );
+        }).start();
 
         //SE MUESTRAN LOS DATOS
         /*
@@ -356,10 +358,10 @@ public class Configuracion extends JPanel{
         int generacionesValue = (int) generaciones.getValue();
 
         //porcentaje de cruces
-        double porCrucesValue = ((int)porcentajeCruces.getValue()) / 100;
+        double porCrucesValue = ((int)porcentajeCruces.getValue()) / 100.0;
 
         //porcentaje de mutaciones
-        int porMutaciones = ((int)porcentajeMutaciones.getValue()) / 100;
+        double porMutaciones = ((int)porcentajeMutaciones.getValue()) / 100.0;
 
         //metodo de seleccion
         String seleccionAux = (String) seleccion.getSelectedItem();

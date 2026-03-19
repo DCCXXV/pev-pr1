@@ -131,13 +131,11 @@ public class Tablero extends JPanel {
             g2.drawString(texto, textX, textY);
         }
 
-        //si hay rutas de drones las pinta
-        if (this.rutasDrones != null)
-            pintarLineas(this.rutasDrones);
-
-        //si hay mejorFitness lo pinta
-        if (this.mejorFiness != 0)
+        //si hay resultados los pinta
+        if (this.mejorFiness != 0) {
             pintarDatos();
+            pintarLineas(this.rutasDrones);
+        }
     }
 
     private void pintarDatos() {
@@ -159,10 +157,10 @@ public class Tablero extends JPanel {
         //TIEMPOS POR DRON
         String[] drones = new String[] {
                 "D1 (x1.5): ",
-                " D2 (x1.0): ",
-                " D3 (x0.7): ",
-                " D4 (x1.2): ",
-                " D5 (x0.5): "
+                "D2 (x1.0): ",
+                "D3 (x0.7): ",
+                "D4 (x1.2): ",
+                "D5 (x0.5): "
         };
 
         textY += 25;
@@ -180,7 +178,7 @@ public class Tablero extends JPanel {
             textY += 15;
         }
 
-        // Restaurar color por defecto
+        //Restaurar color por defecto
         textY += 10;
         g2.setColor(Color.BLACK);
 
@@ -229,6 +227,10 @@ public class Tablero extends JPanel {
         int[] prev = new int[2];
         int[] current = new int[2];
         for (List<int[]> ruta : rutasDrones) {
+            //si ese dron no hace nada se omite
+            if (ruta.isEmpty())
+                continue;
+
             prev[0] = ruta.get(0)[1];
             prev[1] = ruta.get(0)[0];
             for (int j = 1; j < ruta.size(); j++) {
@@ -262,6 +264,7 @@ public class Tablero extends JPanel {
         this.camaras = camaras;
         this.mejorFiness = mejorFitness;
         this.rutasDrones = rutasDrones;
+        this.mejorFiness = 0;
         this.repaint();
     }
 

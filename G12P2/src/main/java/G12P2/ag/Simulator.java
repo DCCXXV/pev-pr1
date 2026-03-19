@@ -77,11 +77,11 @@ public class Simulator {
         evaluarPoblacion();
 
         // mejor absoluto inicial (población 0, antes del primer bucle)
-        double mejorFitnessAbsoluto = Integer.MIN_VALUE;
+        double mejorFitnessAbsoluto = Integer.MAX_VALUE;
         Cromosoma mejorCromosomaAbsoluto = null;
         ResEvaluacion mejorEvaluacion = null;
         for (int i = 0; i < tamPoblacion; i++) {
-            if (fitness[i] > mejorFitnessAbsoluto) {
+            if (fitness[i] < mejorFitnessAbsoluto) {
                 mejorFitnessAbsoluto = fitness[i];
                 mejorCromosomaAbsoluto = poblacion[i].copia();
                 mejorEvaluacion = this.resEvaluacion[i];
@@ -105,10 +105,15 @@ public class Simulator {
                 if (fitness[i] > mejorGen) {
                     mejorGen = fitness[i];
                 }
-                if (fitness[i] > mejorFitnessAbsoluto) {
+                if (fitness[i] < mejorFitnessAbsoluto) {
                     mejorFitnessAbsoluto = fitness[i];
                     mejorCromosomaAbsoluto = poblacion[i].copia();
-                    mejorEvaluacion = this.resEvaluacion[i];
+                    mejorEvaluacion = new ResEvaluacion(
+                            this.resEvaluacion[i].getFitness(),
+                            this.resEvaluacion[i].getTiemposDrones(),
+                            this.resEvaluacion[i].getCaminos(),
+                            this.resEvaluacion[i].getCromosoma()
+                    );
                 }
             }
 
@@ -164,7 +169,7 @@ public class Simulator {
             paresFitness[i][0] = i;
             paresFitness[i][1] = fitness[i];
         }
-        Arrays.sort(paresFitness, (a, b) -> Double.compare(b[1], a[1]));
+        Arrays.sort(paresFitness, (a, b) -> Double.compare(a[1], b[1]));
 
         elite = new Cromosoma[elitismo];
         fitnessElite = new double[elitismo];

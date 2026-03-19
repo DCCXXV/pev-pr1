@@ -37,7 +37,89 @@ public class EvaluacionDrones {
         int[] genes = cromosoma.getGenes();
 
         //===== empieza la evaluacion =====
+        //primero se sacan las camaras a las que ira cada dron
+        List<List<Integer>> recorridosDrones = new ArrayList<>();
+        List<Integer> recorrido = new ArrayList<>();
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] > numCamaras) {
+                recorridosDrones.add(recorrido);
+                recorrido = new ArrayList<>();
+            }
+            else
+                recorrido.add(genes[i]);
+        }
+        recorridosDrones.add(recorrido);
 
+        List<List<int[]>> caminos = new ArrayList<>();
+        int[] costeAcumulado = new int[numDrones];
+        for (int ii = 0; ii < recorridosDrones.size();  ii++) {
+            //excepcion si el dron no tiene recorrido
+            if (recorridosDrones.get(ii).size() == 0) {
+                caminos.add(new ArrayList<int[]>());
+                costeAcumulado[ii] = 0;
+                continue;
+            }
+            resAestrella res = procesarRecorridoDron(recorridosDrones.get(ii), hangar);
+            caminos.add(res.path);
+            costeAcumulado[ii] = res.coste;
+        }
+
+        //se devuelve el dron mas lento teniendo en cuenta las velocidades
+        List<Double> velocidades = cromosoma.getVelocidades();
+        double[] costesReales = new double[numDrones];
+        double max = -1;
+        for (int ii = 0; ii < numDrones; ii++) {
+            double costeReal = costeAcumulado[ii] / velocidades.get(ii);
+            costesReales[ii] = costeReal;
+            if (costeReal > max) {
+                max = costeReal;
+            }
+        }
+
+        return new ResEvaluacion(
+                max,
+                costesReales,
+                caminos,
+                cromosoma
+        );
+    }
+
+    private static resAestrella procesarRecorridoDron(List<Integer> recorrido, int[] hangar) {
+        //variables para el resultado del camino de este dron
+        int costeAcumulado = 0;
+        List<int[]> camino = new ArrayList<>();
+
+        //desde el hangar a la primera camara
+        Pos currentPos = new Pos(hangar[0], hangar[1]);
+        Pos objectivePos = new Pos(camaras[recorrido.get(0)-1][1], camaras[recorrido.get(0)-1][0]);
+
+        resAestrella res = aEstrella(currentPos, objectivePos);
+        costeAcumulado += res.coste;
+        camino.addAll(res.path);
+
+        //recorrido por las camaras
+        for (int i = 1; i < recorrido.size(); i++) {
+            currentPos = new Pos(camaras[recorrido.get(i-1)-1][1], camaras[recorrido.get(i-1)-1][0]);
+            objectivePos = new Pos(camaras[recorrido.get(i)-1][1], camaras[recorrido.get(i)-1][0]);
+
+            res = aEstrella(currentPos, objectivePos);
+            costeAcumulado += res.coste;
+            camino.addAll(res.path);
+        }
+
+        //desde la ultima camara al hangar
+        int aux = recorrido.get(recorrido.size()-1)-1;
+        currentPos = new Pos(camaras[aux][1], camaras[aux][0]);
+        objectivePos = new Pos(hangar[0], hangar[1]);
+
+        res = aEstrella(currentPos, objectivePos);
+        costeAcumulado += res.coste;
+        camino.addAll(res.path);
+
+        return new resAestrella(costeAcumulado, camino);
+    }
+
+    private static void recorridoDron(int numCamaras, int numDrones, int[] genes, int[] hangar) {
         //distancia desde el inicio a la primera camara
         int current = numCamaras+1;
         int objective = genes[0];
@@ -83,30 +165,6 @@ public class EvaluacionDrones {
         resAestrella res = aEstrella(objectivePos, new Pos(hangar[0], hangar[1]));
         costeAcumulado[currentDron] += res.coste;
         caminos.get(currentDron).addAll(res.path);
-
-        //se guardan todos los caminos de los drones
-        List<List<int[]>> aux = new ArrayList<>();
-        for (List<int[]> camino : caminos)
-            aux.add(camino);
-
-        //se devuelve el dron mas lento teniendo en cuenta las velocidades
-        List<Double> velocidades = cromosoma.getVelocidades();
-        double[] costesReales = new double[numDrones];
-        double max = -1;
-        for (int i = 0; i < numDrones; i++) {
-            double costeReal = costeAcumulado[i] / velocidades.get(i);
-            costesReales[i] = costeReal;
-            if (costeReal > max) {
-                max = costeReal;
-            }
-        }
-
-        return new ResEvaluacion(
-                max,
-                costesReales,
-                caminos,
-                cromosoma
-        );
     }
 
     private static resAestrella aEstrella(Pos ini, Pos fin) {

@@ -36,7 +36,7 @@ public class Main {
 //        int[] inicio = Mapas.getInicio("SuperMercado");
 //        Supplier<CromosomaDrones> supplier = () -> new CromosomaDrones(5, scene);
 //        CromosomaDrones cromosomaDrones = supplier.get();
-//        cromosomaDrones.setGenes(new int[]{1,9,2,10,3,11,4,12,5,6,7,8});
+//        cromosomaDrones.setGenes(new int[]{9,1,2,10,3,11,4,12,5,6,7,8});
 //        ResEvaluacion res = EvaluacionDrones.evaluar(cromosomaDrones);
 //        tablero.setMejor(res.getFitness(), res.getTiemposDrones(), res.getCaminos(), res.getCromosoma().getGenes());
 //        tablero.repaint();

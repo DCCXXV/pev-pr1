@@ -60,7 +60,7 @@ public class Configuracion extends JPanel{
         /*
         Para colocar los elementos dentro del GridBag
         se va aumentando y para ir colocando los elementos debajo
-         */
+        */
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -73,6 +73,7 @@ public class Configuracion extends JPanel{
 
         gbc.gridx = 1;
         this.mapa = new JComboBox<>(new String[]{"Museo", "Pasillo", "SuperMercado"});
+        this.mapa.setSelectedIndex(2);
         add(mapa, gbc);
         y++;
 
@@ -86,7 +87,7 @@ public class Configuracion extends JPanel{
         add(new JLabel("Numero de drones:"), gbc);
 
         gbc.gridx = 1;
-        this.numDrones = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
+        this.numDrones = new JSpinner(new SpinnerNumberModel(5, 1, 5, 1));
         add(numDrones, gbc);
         y++;
 
@@ -316,25 +317,6 @@ public class Configuracion extends JPanel{
                     tablero
             );
         }).start();
-
-        //SE MUESTRAN LOS DATOS
-        /*
-        SimulatorResult result = simulator.getResultado();
-        if (!modoPonderado)
-            tablero.setTablero(result.getMapa(), null, result.getMejorFitness());
-        else
-            tablero.setTablero(result.getMapa(), Mapas.getMapa(mapaAux+"Ponderado"), result.getMejorFitness());
-        tablero.revalidate();
-        tablero.repaint();
-
-        grafica.actualizarGrafica(
-                result.getMejoresPorGeneracion(),
-                result.getMejoresAbsolutos(),
-                result.getMediaPorGeneracion()
-        );
-        grafica.revalidate();
-        grafica.repaint();
-        */
     }
 
     private Datos recogerDatos() {

@@ -39,6 +39,7 @@ public class Configuracion extends JPanel{
     private JCheckBox memetico;
     private JCheckBox memeticoElite;
     private JSpinner porcentajeMemetico;
+    private JCheckBox multiOjbetivo;
     private JButton ejecutar;
     private JButton cancelar;
     private JLabel labelOptimos;
@@ -65,7 +66,8 @@ public class Configuracion extends JPanel{
             double porcentajeElitismo,
             boolean memetico,
             boolean memeticoElite,
-            double porcentajeMemetico
+            double porcentajeMemetico,
+            boolean multiObjetivo
     ){};
 
     public Configuracion(Tablero tablero, Grafica grafica) {
@@ -294,6 +296,16 @@ public class Configuracion extends JPanel{
         add(porcentajeMemetico, gbc);
         y++;
 
+        //Multiobjetivo
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        add(new JLabel("Multibojetivo:"), gbc);
+
+        gbc.gridx = 1;
+        this.multiOjbetivo = new JCheckBox();
+        add(multiOjbetivo, gbc);
+        y++;
+
         // Boton de ejecutar
         gbc.gridx = 0;
         gbc.gridy = y;
@@ -378,7 +390,7 @@ public class Configuracion extends JPanel{
         Scene scene = new Scene(mapa, inicio, datos.numCamaras, datos.semilla);
 
         //genero el supplier de cromosomas con el numero de drones y la escena ya creada
-        Supplier<Cromosoma> supplier = () -> new CromosomaDrones(datos.numDrones, scene);
+        Supplier<Cromosoma> supplier = () -> new CromosomaDrones(datos.numDrones, scene, datos.multiObjetivo);
 
         //SE HACE LA SIGUIENTE SIMULACION EN UN HILO APARTE PARA NO BLOQUEAR LA UI
         Thread hilo = new Thread(() -> {
@@ -526,7 +538,6 @@ public class Configuracion extends JPanel{
         //metodo de cruce
         String cruceAux = (String) cruce.getSelectedItem();
         Cruce cruceValue = null;
-        //TODO poner los cruces de esta practica
         switch (cruceAux) {
             case "CruceA":
                 cruceValue = new CruceA();
@@ -582,6 +593,8 @@ public class Configuracion extends JPanel{
         //porcentaje de elitismo
         double porcentajeMemetico = ((int) this.porcentajeMemetico.getValue()) / 100.0;
 
+        boolean multiObjetivo = this.multiOjbetivo.isSelected();
+
         return new Datos(
                 mapaValue,
                 numDronesValue,
@@ -597,7 +610,8 @@ public class Configuracion extends JPanel{
                 elitismoValue,
                 memetico,
                 memeticoElite,
-                porcentajeMemetico
+                porcentajeMemetico,
+                multiObjetivo
         );
     }
 }

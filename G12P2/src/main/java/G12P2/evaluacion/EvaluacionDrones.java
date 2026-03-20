@@ -19,7 +19,7 @@ public class EvaluacionDrones {
         new ConcurrentHashMap<>();
     private static volatile Scene escenaCached = null;
 
-    public static ResEvaluacion evaluar(CromosomaDrones cromosoma) {
+    public static ResEvaluacion evaluar(CromosomaDrones cromosoma, boolean multiObjetivo) {
         Scene scene = cromosoma.getScene();
         int[] hangar = scene.getInicio();
         int numCamaras = cromosoma.getNumCamaras();
@@ -89,7 +89,13 @@ public class EvaluacionDrones {
             if (costeReal < min) min = costeReal;
         }
 
-        double fitnessFinal = max + ((max - min) * 0.5);
+
+        double fitnessFinal = 0;
+        if (multiObjetivo)
+            fitnessFinal = max + ((max - min) * 0.5) + eficiencias;
+        else
+            fitnessFinal = max + ((max - min) * 0.5);
+
         return new ResEvaluacion(
             fitnessFinal,
             eficiencias,

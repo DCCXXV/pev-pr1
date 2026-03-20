@@ -22,7 +22,7 @@ public class SupplierFactory {
         int[][] grid = copiarGrid(Mapas.getMapa(nombre + "Ponderado"));
         insertarCamaras(grid, numCamaras, semilla);
         Scene scene = new Scene(grid, new int[]{0,0}, 0,0); //TODO esto con 0 y 0 habria que quitarlo
-        return () -> new CromosomaDrones(numDrones, scene);
+        return () -> new CromosomaDrones(numDrones, scene, false);
     }
 
     private static void insertarCamaras(

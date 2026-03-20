@@ -18,14 +18,15 @@ public class CromosomaDrones implements Cromosoma {
     private int[] genes;
     private int D, C; //numero de drones y camaras
     private Scene scene;
+    private boolean multiObjetivo;
 
 
-
-    public CromosomaDrones(int D, Scene scene) {
+    public CromosomaDrones(int D, Scene scene, boolean multiObjetivo) {
         this.D = D;
         this.C = scene.getNumCamaras();
         this.scene = scene;
         this.genes = generarGenesAleatorios();
+        this.multiObjetivo = multiObjetivo;
     }
 
     //copia
@@ -87,7 +88,7 @@ public class CromosomaDrones implements Cromosoma {
 
     @Override
     public ResEvaluacion evaluar() {
-        return EvaluacionDrones.evaluar(this);
+        return EvaluacionDrones.evaluar(this, multiObjetivo);
     }
 
     @Override

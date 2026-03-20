@@ -12,12 +12,16 @@ public class Tablero extends JPanel {
     //informacion del tablero
     private int[][] grid;
     private int[][] camaras;
+    private int[] hangar;
+    private double suma;
     private double mejorFiness = 0;
     private double energia = 0;
     private double[] tiemposDrones;
     private double[] energiaDrones;
     private List<List<int[]>> rutasDrones;
     int[] cromosoma;
+    //mutliObjetivo seleccionado
+    boolean multiObjetivo;
 
     //variables auxiliares del tablero
     Graphics2D g2 = null;
@@ -35,9 +39,10 @@ public class Tablero extends JPanel {
             new Color(200, 80, 255, 173)   // D5 - morado
     };
 
-    public Tablero(int[][] grid, int[][] camaras) {
+    public Tablero(int[][] grid, int[][] camaras, int[] hangar) {
         this.grid = grid;
         this.camaras = camaras;
+        this.hangar = hangar;
     }
 
     public Tablero() {
@@ -78,7 +83,10 @@ public class Tablero extends JPanel {
                         break;
 
                     case 1:
-                        g2.setColor(Color.WHITE);
+                        if (row == hangar[0] && col == hangar[1])
+                            g2.setColor(Color.RED);
+                        else
+                            g2.setColor(Color.WHITE);
                         g2.fillRect(x, y, tamCelda, tamCelda);
                         break;
 
@@ -145,12 +153,19 @@ public class Tablero extends JPanel {
         g2.setFont(new Font("Arial", Font.BOLD, 15));
         FontMetrics fm = g2.getFontMetrics();
 
+        //SUMA
+        String sumaTexto = "Fitness: " + String.format("%.2f", this.suma);
+        int textWidth = fm.stringWidth(sumaTexto);
+        int textX = offsetX;
+        int textY = offsetY + altoTablero + fm.getAscent() + 10;
+        g2.drawString(sumaTexto, textX, textY);
+
         //MEJOR FITNESS
         String textoPrincipal = "Tiempo: " + String.format("%.2f", this.mejorFiness);
         textoPrincipal += "     Energia: " + String.format("%.2f", this.energia);
-        int textWidth = fm.stringWidth(textoPrincipal);
-        int textX = offsetX;
-        int textY = offsetY + altoTablero + fm.getAscent() + 10;
+        textWidth = fm.stringWidth(textoPrincipal);
+        textX = offsetX;
+        textY += 25;
         g2.drawString(textoPrincipal, textX, textY);
 
         //cambio el tamaño de la letra
@@ -265,22 +280,35 @@ public class Tablero extends JPanel {
         g2.drawLine(x1, y1, x2, y2);
     }
 
-    public void setTablero(int[][] grid, int[][] camaras, int mejorFitness, List<List<int[]>> rutasDrones) {
+    public void setTablero(int[][] grid, int[][] camaras, int mejorFitness, List<List<int[]>> rutasDrones, int[] hangar) {
         this.grid = grid;
         this.camaras = camaras;
         this.mejorFiness = mejorFitness;
         this.rutasDrones = rutasDrones;
         this.mejorFiness = 0;
+        this.hangar = hangar;
         this.repaint();
     }
 
     public void setMejor(double fitness, double energia, double[] tiemposDrones, double[] energiaDrones, List<List<int[]>> rutasDrones, int[] Cromosoma) {
-        this.mejorFiness = fitness;
+
+        if (multiObjetivo) {
+            this.mejorFiness = fitness - energia;
+            this.suma = fitness;
+        }
+        else {
+            this.suma = fitness;
+            this.mejorFiness = fitness;
+        }
         this.energia = energia;
         this.tiemposDrones = tiemposDrones;
         this.energiaDrones = energiaDrones;
         this.rutasDrones = rutasDrones;
         this.cromosoma = Cromosoma;
         SwingUtilities.invokeLater(this::repaint);
+    }
+
+    public void setMultiObjetivo(boolean multiObjetivo) {
+        this.multiObjetivo = multiObjetivo;
     }
 }

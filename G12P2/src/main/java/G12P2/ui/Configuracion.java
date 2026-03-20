@@ -371,7 +371,7 @@ public class Configuracion extends JPanel{
         Scene scene = new Scene(mapa, inicio, numCamaras, semilla);
 
         int[][] camaras = scene.getPosCamaras();
-        tablero.setTablero(Mapas.getMapa(seleccionado), camaras, 0, null);
+        tablero.setTablero(Mapas.getMapa(seleccionado), camaras, 0, null, Mapas.getInicio(seleccionado));
         grafica.setGeneraciones(10);
 
         this.resOptimos = new ArrayList<>();
@@ -400,6 +400,8 @@ public class Configuracion extends JPanel{
             this.resOptimos = new ArrayList<>();
             this.labelOptimos.setVisible(false);
             this.optimos.setVisible(false);
+
+            tablero.setMultiObjetivo(datos.multiObjetivo);
 
             Simulator simulator = new Simulator(
                     datos.generaciones,
@@ -481,6 +483,7 @@ public class Configuracion extends JPanel{
         this.memetico.setEnabled(estado);
         this.memeticoElite.setEnabled(estado);
         this.porcentajeMemetico.setEnabled(estado);
+        this.multiOjbetivo.setEnabled(estado);
         this.ejecutar.setVisible(estado);
         this.cancelar.setVisible(!estado);
     }

@@ -5,8 +5,11 @@ import G12P2.Scene;
 import G12P2.ag.Simulator;
 import G12P2.ag.cruce.*;
 import G12P2.ag.mutacion.Mutacion;
+import G12P2.ag.mutacion.MutacionHeuristica;
 import G12P2.ag.mutacion.MutacionInsercion;
 import G12P2.ag.mutacion.MutacionIntercambio;
+import G12P2.ag.mutacion.MutacionInversion;
+import G12P2.ag.mutacion.MutacionScramble;
 import G12P2.ag.seleccion.*;
 import G12P2.cromosomas.Cromosoma;
 import G12P2.cromosomas.CromosomaDrones;
@@ -223,7 +226,10 @@ public class Configuracion extends JPanel{
         this.mutacion = new JComboBox<>(
                 new String[]{
                         "Insercion",
-                        "Intercambio"
+                        "Intercambio",
+                        "Inversion",
+                        "Heuristica",
+                        "Scramble"
                 });
         add(mutacion, gbc);
         y++;
@@ -554,6 +560,15 @@ public class Configuracion extends JPanel{
                 break;
             case "Intercambio":
                 mutacionValue = new MutacionIntercambio();
+                break;
+            case "Inversion":
+                mutacionValue = new MutacionInversion();
+                break;
+            case "Heuristica":
+                mutacionValue = new MutacionHeuristica();
+                break;
+            case "Scramble":
+                mutacionValue = new MutacionScramble();
                 break;
         }
 

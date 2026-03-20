@@ -374,50 +374,14 @@ public class Configuracion extends JPanel{
         //genero el supplier de cromosomas con el numero de drones y la escena ya creada
         Supplier<Cromosoma> supplier = () -> new CromosomaDrones(datos.numDrones, scene);
 
-        //metodo de cruce
-        String metodoC = (String) cruce.getSelectedItem();
-        Cruce metodoCruce = null;
-        switch (metodoC) {
-            case "CruceA":
-                metodoCruce = new CruceA();
-                break;
-            case "CruceCO":
-                metodoCruce = new CruceCO();
-                break;
-            case "CruceCX":
-                metodoCruce = new CruceCX();
-                break;
-            case "CruceERX":
-                metodoCruce = new CruceERX();
-                break;
-            case "CruceOX":
-                metodoCruce = new CruceOX();
-                break;
-            case "CruceOXPP":
-                metodoCruce = new CruceOXPP();
-                break;
-            case "CrucePMX":
-                metodoCruce = new CrucePMX();
-                break;
-        }
-
-        String metodoM = (String) mutacion.getSelectedItem();
-        Mutacion metodoMutacion = null;
-        switch (metodoM) {
-            case "Insercion":
-                metodoMutacion = new MutacionInsercion();
-                break;
-            case "Intercambio":
-                metodoMutacion = new MutacionIntercambio();
-                break;
-        }
-
         //SE HACE LA SIGUIENTE SIMULACION EN UN HILO APARTE PARA NO BLOQUEAR LA UI
         Thread hilo = new Thread(() -> {
             //desactiva los componentes
             estadoComponentes(false);
             this.grafica.setGeneraciones(datos.generaciones);
             this.resOptimos = new ArrayList<>();
+            this.labelOptimos.setVisible(false);
+            this.optimos.setVisible(false);
 
             Simulator simulator = new Simulator(
                     datos.generaciones,
@@ -439,11 +403,34 @@ public class Configuracion extends JPanel{
             List<ResEvaluacion> datosOptimos = simulator.getOptimos();
             if (datosOptimos != null) {
                 String[] nombresOptimos =  new String[datosOptimos.size()];
-                for (int i = 0; i < datosOptimos.size(); i++) {
-                    nombresOptimos[i] = "Optimo T: " + String.format("%-8.2f", datosOptimos.get(i).getFitness())
-                            + " E:  " + String.format("%.2f", datosOptimos.get(i).getEnergia());
+//                for (int i = 0; i < datosOptimos.size(); i++) {
+//                    nombresOptimos[i] = "Optimo T: " + String.format("%-8.2f", datosOptimos.get(i).getFitness())
+//                            + " E:  " + String.format("%.2f", datosOptimos.get(i).getEnergia());
+//                    this.resOptimos.add(datosOptimos.get(i));
+//                }
+
+                //pongo los datos en la estructura
+                for (int i = 0; i < datosOptimos.size(); i++)
                     this.resOptimos.add(datosOptimos.get(i));
+
+                //pongo los nombres al combobox
+                nombresOptimos[0] = "Ruta Emergencia Rápida";
+                int rapidoIdx = 1;
+                int ecoIdx = 1;
+                for (double i = 1; i < datosOptimos.size() - 1; i++) {
+                    if (i < (datosOptimos.size()-1) / 2.0) {
+                        nombresOptimos[(int)i] = "Equilibrado Rápido " + rapidoIdx;
+                        rapidoIdx++;
+                    }
+                    else if (i > (datosOptimos.size()-1) / 2.0) {
+                        nombresOptimos[(int)i] = "Equilibrado Eco " + ecoIdx;
+                        ecoIdx++;
+                    }
+                    else
+                        nombresOptimos[(int)i] = "Equilibrado";
                 }
+                nombresOptimos[datosOptimos.size()-1] = "Ruta Eco";
+
                 this.optimos.setModel(new DefaultComboBoxModel<>(nombresOptimos));
                 this.optimos.setVisible(true);
                 this.labelOptimos.setVisible(true);
@@ -473,6 +460,9 @@ public class Configuracion extends JPanel{
         cruce.setEnabled(estado);
         mutacion.setEnabled(estado);
         elitismo.setEnabled(estado);
+        this.memetico.setEnabled(estado);
+        this.memeticoElite.setEnabled(estado);
+        this.porcentajeMemetico.setEnabled(estado);
         this.ejecutar.setVisible(estado);
         this.cancelar.setVisible(!estado);
     }

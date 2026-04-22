@@ -14,10 +14,18 @@ public class CruceSubArboles implements Cruce {
 
     private record Slot(Consumer<NodoAst> setter, NodoAst nodo) {}
 
+    private final Random rand;
+
+    public CruceSubArboles() {
+        this.rand = new Random();
+    }
+
+    public CruceSubArboles(Random rand) {
+        this.rand = rand;
+    }
+
     @Override
     public void cruzar(Cromosoma padre1, Cromosoma padre2) {
-        Random rand = new Random();
-
         List<Slot> slotsP1 = recolectarCondicionales(padre1);
         List<Slot> slotsP2 = recolectarCondicionales(padre2);
 

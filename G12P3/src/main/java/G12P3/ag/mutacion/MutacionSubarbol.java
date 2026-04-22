@@ -32,23 +32,42 @@ public class MutacionSubarbol implements Mutacion {
         recolectarHuecos(cromosoma.arbol, huecos);
 
         Hueco hueco = huecos.get(rnd.nextInt(huecos.size()));
-        NodoAst nuevoSubarbol = GeneradorArbol.crearGrow(hueco.prof(), profMax, rnd);
+        NodoAst nuevoSubarbol = GeneradorArbol.crearGrow(
+            hueco.prof(),
+            profMax,
+            rnd
+        );
         hueco.setter().accept(nuevoSubarbol);
     }
 
     private void recolectarHuecos(NodoAst nodo, List<Hueco> huecos) {
         if (nodo instanceof NodoCondicional cond) {
-            huecos.add(new Hueco(cond::setHijoTrue, cond.getHijoTrue().getProfundidad()));
+            huecos.add(
+                new Hueco(
+                    cond::setHijoTrue,
+                    cond.getHijoTrue().getProfundidad()
+                )
+            );
             recolectarHuecos(cond.getHijoTrue(), huecos);
             if (cond.getHijoFalse() != null) {
-                huecos.add(new Hueco(cond::setHijoFalse, cond.getHijoFalse().getProfundidad()));
+                huecos.add(
+                    new Hueco(
+                        cond::setHijoFalse,
+                        cond.getHijoFalse().getProfundidad()
+                    )
+                );
                 recolectarHuecos(cond.getHijoFalse(), huecos);
             }
         } else if (nodo instanceof NodoBloque bloque) {
             List<NodoAst> hijos = bloque.getHijos();
             for (int i = 0; i < hijos.size(); i++) {
                 final int idx = i;
-                huecos.add(new Hueco(nuevo -> hijos.set(idx, nuevo), hijos.get(i).getProfundidad()));
+                huecos.add(
+                    new Hueco(
+                        nuevo -> hijos.set(idx, nuevo),
+                        hijos.get(i).getProfundidad()
+                    )
+                );
                 recolectarHuecos(hijos.get(i), huecos);
             }
         }

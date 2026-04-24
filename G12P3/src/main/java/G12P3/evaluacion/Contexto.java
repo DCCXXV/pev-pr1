@@ -8,7 +8,7 @@ public class Contexto {
     public int direccion; // 0=Norte, 1=Este, 2=Sur, 3=Oeste
     public double energia;
     public boolean vivo;
-    public boolean accionTomada; // se pone a true cuando se ejecuta una accion en un tick
+    public boolean accionTomada;
 
     public int[][] mapa; // 0=suelo, 1=muro, 2=muestra, 3=arena
     public boolean[][] visitado;
@@ -24,17 +24,16 @@ public class Contexto {
     public final int MAX_TICKS = 150;
     private static final int ENERGIA_INICIAL = 100;
 
-    // deltas para cada direccion: Norte, Este, Sur, Oeste
-    private static final int[] DY = { -1, 0, 1, 0 }; // fila
-    private static final int[] DX = { 0, 1, 0, -1 }; // columna
+    // Norte, Este, Sur, Oeste
+    private static final int[] DY = { -1, 0, 1, 0 };
+    private static final int[] DX = { 0, 1, 0, -1 };
 
-    // inicializa el contexto con un mapa ya generado.
-    // el rover empieza en (1,1) orientado al Este.
+    // el rover empieza en (1,1) orientado al Este
     public Contexto(int[][] mapa) {
         this.mapa = copiarMapa(mapa); // copia para no mutar el original
-        this.y = 1; // fila
-        this.x = 1; // columna
-        this.direccion = 1; // Este
+        this.y = 1;
+        this.x = 1;
+        this.direccion = 1;
         this.energia = ENERGIA_INICIAL;
         this.vivo = true;
         this.accionTomada = false;
@@ -51,8 +50,6 @@ public class Contexto {
         this.girosConsecutivos = 0;
     }
 
-    // ejecuta la simulacion completa (150 ticks ejecutando el AST)
-    // devuelve el resultado con todas las estadisticas
     public ResultadoSimulacion simular(NodoAst arbol) {
         while (ticks < MAX_TICKS && vivo) {
             accionTomada = false;
@@ -75,7 +72,6 @@ public class Contexto {
         return res;
     }
 
-    // lee el valor de un sensor.
     public double leerSensor(TipoSensor tipo) {
         return switch (tipo) {
             case DIST_MUESTRA -> raycast(2); // muestra
@@ -85,9 +81,7 @@ public class Contexto {
         };
     }
 
-    // escanea en linea recta en la direccion actual del rover.
-    // para DIST_MUESTRA y DIST_ARENA: devuelve 100 si hay muro antes o no se encuentra.
-    // para DIST_OBSTACULO: devuelve la distancia al muro.
+    // devuelve distancia al objetivo o 100 si hay muro antes o no se encuentra
     private int raycast(int tipoBuscado) {
         int dy = DY[direccion];
         int dx = DX[direccion];
@@ -98,13 +92,10 @@ public class Contexto {
         while (fy >= 0 && fy < mapa.length && fx >= 0 && fx < mapa[0].length) {
             int celda = mapa[fy][fx];
 
-            // si buscamos un muro, devolvemos la distancia directamente
             if (tipoBuscado == 1) {
                 if (celda == 1) return dist;
             } else {
-                // si encontramos un muro antes del objetivo, bloqueado
                 if (celda == 1) return 100;
-                // si encontramos lo que buscamos
                 if (celda == tipoBuscado) return dist;
             }
 
@@ -116,9 +107,6 @@ public class Contexto {
         return 100; // no encontrado o fuera de limites
     }
 
-    // ACCIONES
-
-    // avanzar -> mueve el rover a la casilla frontal.
     public void avanzar() {
         if (accionTomada || !vivo) return;
         accionTomada = true;
@@ -165,7 +153,6 @@ public class Contexto {
         }
     }
 
-    // girar a la izquierda (90 grados antihorario).
     public void girarIzquierda() {
         if (accionTomada || !vivo) return;
         accionTomada = true;
@@ -176,7 +163,6 @@ public class Contexto {
         comprobarMareo();
     }
 
-    // girar a la derecha (90 grados horario).
     public void girarDerecha() {
         if (accionTomada || !vivo) return;
         accionTomada = true;
@@ -202,7 +188,7 @@ public class Contexto {
         }
     }
 
-    // si 4+ giros consecutivos sin avanzar: -20 de energia.
+    // si 4+ giros consecutivos sin avanzar: -20 de energia
     private void comprobarMareo() {
         if (girosConsecutivos >= 4) {
             gastarEnergia(20);

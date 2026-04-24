@@ -11,8 +11,8 @@ public class NodoCondicional implements NodoAst {
     private TipoSensor sensor;
     private Operador operador;
     private int umbral; // 10, 50 o 100
-    private NodoAst hijoTrue; // rama IF
-    private NodoAst hijoFalse; // rama ELSE
+    private NodoAst hijoTrue;
+    private NodoAst hijoFalse;
     private int profundidad;
 
     public NodoCondicional(TipoSensor sensor, Operador operador, int umbral) {
@@ -47,7 +47,7 @@ public class NodoCondicional implements NodoAst {
 
     @Override
     public int contarNodos() {
-        int total = 1; // el propio condicional
+        int total = 1;
         total += hijoTrue.contarNodos();
         if (hijoFalse != null) total += hijoFalse.contarNodos();
         return total;

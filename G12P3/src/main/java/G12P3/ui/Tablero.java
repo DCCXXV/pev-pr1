@@ -72,10 +72,8 @@ public class Tablero extends JPanel {
                 int y = offsetY + row * tamCelda;
                 int celda = mapa[row][col];
 
-                // fondo segun tipo de terreno
                 switch (celda) {
                     case 1 -> {
-                        // muro
                         g2.setColor(new Color(90, 20, 20));
                         g2.fillRect(x, y, tamCelda, tamCelda);
                         g2.setColor(new Color(220, 60, 60));
@@ -94,12 +92,10 @@ public class Tablero extends JPanel {
                         );
                     }
                     case 3 -> {
-                        // arena
                         g2.setColor(new Color(230, 140, 40));
                         g2.fillRect(x, y, tamCelda, tamCelda);
                     }
                     default -> {
-                        // suelo
                         g2.setColor(new Color(55, 55, 60));
                         g2.fillRect(x, y, tamCelda, tamCelda);
                     }
@@ -111,8 +107,7 @@ public class Tablero extends JPanel {
                     g2.fillRect(x, y, tamCelda, tamCelda);
                 }
 
-                // muestra cientifica: recogida (transparente) si habia muestra en el
-                // mapa base y el rover la visito; si no, muestra normal
+                // muestra recogida (transparente) si el rover la visito; si no, muestra normal
                 boolean recogida = visitado != null
                     && visitado[row][col]
                     && mapaOriginal[row][col] == 2
@@ -139,7 +134,6 @@ public class Tablero extends JPanel {
             }
         }
 
-        // rover
         if (dm != null) {
             pintarRover(dm.posFila, dm.posCol, dm.direccion);
             pintarDatos(altoTablero, dm);

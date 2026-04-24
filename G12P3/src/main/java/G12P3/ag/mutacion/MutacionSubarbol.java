@@ -26,7 +26,6 @@ public class MutacionSubarbol implements Mutacion {
     public void mutar(Cromosoma cromosoma) {
         List<Hueco> huecos = new ArrayList<>();
 
-        // hueco raiz: profundidad 0
         huecos.add(new Hueco(nuevo -> cromosoma.arbol = nuevo, 0));
 
         recolectarHuecos(cromosoma.arbol, huecos);

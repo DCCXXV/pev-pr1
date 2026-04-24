@@ -10,7 +10,6 @@ public class Truncamiento implements Seleccion {
     public Cromosoma[] seleccionar(Cromosoma[] poblacion) {
         int n = poblacion.length;
 
-        // ordena descendente por fitness (mejor primero)
         Cromosoma[] ordenados = poblacion.clone();
         Arrays.sort(ordenados, (a, b) -> Double.compare(b.fitness, a.fitness));
 

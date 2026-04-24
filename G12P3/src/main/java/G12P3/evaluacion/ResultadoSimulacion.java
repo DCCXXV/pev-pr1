@@ -1,6 +1,5 @@
 package G12P3.evaluacion;
 
-// almacena las estadisticas de una simulacion sobre un mapa.
 public class ResultadoSimulacion {
 
     public int muestrasRecogidas;

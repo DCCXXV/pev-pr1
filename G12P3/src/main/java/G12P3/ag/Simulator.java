@@ -105,7 +105,6 @@ public class Simulator {
             grafica.actualizarGrafica(gen, mejorGen, mejorFitnessAbs, media);
             tablero.setMejor(mejorAbs);
             fenotipo.setMejor(mejorAbs);
-            // mostramos por consola el mejor de esta iteracion
             System.out.println(
                 gen +
                     " | " +

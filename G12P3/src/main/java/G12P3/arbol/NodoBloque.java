@@ -42,7 +42,7 @@ public class NodoBloque implements NodoAst {
 
     @Override
     public int contarNodos() {
-        int total = 1; // el propio bloque
+        int total = 1;
         for (NodoAst hijo : hijos)
             total += hijo.contarNodos();
         return total;

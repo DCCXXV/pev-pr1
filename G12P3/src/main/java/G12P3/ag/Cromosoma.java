@@ -12,18 +12,17 @@ public class Cromosoma {
 
     public NodoAst arbol;
 
-    // resultados de la ultima evaluacion
     public double fitness;          // fitness final (con penalizacion de bloat)
     public double fitnessBase;      // media del fitness base en los 3 mapas
-    public int nodos;               // numero de nodos del AST
-    public int profundidadMax;      // profundidad maxima real del AST
+    public int nodos;
+    public int profundidadMax;
 
     // detalles de cada mapa evaluado (para poder visualizar los 3 recorridos)
     public DatosMapa[] datosPorMapa;
 
     public static class DatosMapa {
-        public int[][] mapaInicial;      // mapa antes de la simulacion
-        public int[][] mapaFinal;        // mapa tras la simulacion (muestras recogidas quitadas)
+        public int[][] mapaInicial;
+        public int[][] mapaFinal;
         public boolean[][] visitado;
         public int posFila;
         public int posCol;
@@ -33,7 +32,7 @@ public class Cromosoma {
         public int casillasExploradas;
         public int pisadasArena;
         public int colisiones;
-        public double fitnessBase;       // fitness base especifico de este mapa
+        public double fitnessBase;
     }
 
     public Cromosoma(NodoAst arbol) {
@@ -55,20 +54,14 @@ public class Cromosoma {
         return copia;
     }
 
-    // evalua el cromosoma ejecutando su arbol-programa en varios mapas distintos
-    // (generados con semillas diferentes) para que el fitness no dependa de un
-    // unico escenario. devuelve el fitness final ya con la penalizacion por bloat.
+    // evalua el arbol en N mapas distintos para evitar dependencia de un unico escenario
     public double evaluar(long[] semillas, double coefBloat) {
         double suma = 0;
         this.datosPorMapa = new DatosMapa[semillas.length];
         for (int i = 0; i < semillas.length; i++) {
-            // genera un mapa lunar distinto para cada semilla
             int[][] mapa = MapaLunar.generar(semillas[i]);
-            // crea el entorno de simulacion (posicion inicial del rover, energia, etc.)
             Contexto ctx = new Contexto(mapa);
-            // ejecuta el arbol como programa de control del rover en ese mapa
             ResultadoSimulacion res = ctx.simular(arbol);
-            // acumula la puntuacion obtenida (muestras, exploracion, penalizaciones...)
             double fb = res.calcularFitnessBase();
             suma += fb;
 
@@ -88,12 +81,10 @@ public class Cromosoma {
             dm.fitnessBase = fb;
             this.datosPorMapa[i] = dm;
         }
-        // fitness base = media del rendimiento en los N mapas
         this.fitnessBase = suma / semillas.length;
         this.nodos = arbol.contarNodos();
         this.profundidadMax = arbol.calcularProfundidadMaxima();
-        // penalizacion por bloating: arboles mas grandes reciben menos fitness
-        // para evitar que crezcan sin mejorar el comportamiento real
+        // penalizacion por bloat: arboles grandes reciben menos fitness para frenar el crecimiento
         this.fitness = this.fitnessBase - (this.nodos * coefBloat);
         return this.fitness;
     }

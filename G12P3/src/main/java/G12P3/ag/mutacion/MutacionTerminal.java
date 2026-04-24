@@ -33,8 +33,7 @@ public class MutacionTerminal implements Mutacion {
 
         TipoAccion nueva;
 
-        // hay 1/3 de probabilidades de que el nodo terminal nuevo sea el mismo
-        // por lo que así aseguramos de que el cromosoma restante no sea identico
+        // forzamos que el nuevo terminal sea distinto al actual
         do {
             nueva = ACCIONES[rnd.nextInt(ACCIONES.length)];
         } while (nueva == actual);

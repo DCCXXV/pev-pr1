@@ -74,7 +74,6 @@ public class Configuracion extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         int y = 0;
 
-        // Semilla
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Semilla:"), gbc);
@@ -86,7 +85,6 @@ public class Configuracion extends JPanel {
         y++;
         this.semilla.addChangeListener(e -> generarTablero());
 
-        // Poblacion
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Tamaño de población:"), gbc);
@@ -95,7 +93,6 @@ public class Configuracion extends JPanel {
         add(poblacion, gbc);
         y++;
 
-        // Generaciones
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Número de generaciones:"), gbc);
@@ -106,7 +103,6 @@ public class Configuracion extends JPanel {
         add(generaciones, gbc);
         y++;
 
-        // % cruces
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Porcentaje de cruces (%):"), gbc);
@@ -117,7 +113,6 @@ public class Configuracion extends JPanel {
         add(porcentajeCruces, gbc);
         y++;
 
-        // % mutaciones
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Porcentaje de mutaciones (%):"), gbc);
@@ -128,7 +123,6 @@ public class Configuracion extends JPanel {
         add(porcentajeMutaciones, gbc);
         y++;
 
-        // Profundidad maxima
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Profundidad máxima inicial:"), gbc);
@@ -139,7 +133,6 @@ public class Configuracion extends JPanel {
         add(profundidadMaxima, gbc);
         y++;
 
-        // Coef bloat
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Coeficiente de bloating:"), gbc);
@@ -150,7 +143,6 @@ public class Configuracion extends JPanel {
         add(coefBloat, gbc);
         y++;
 
-        // Elitismo
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Elitismo (%):"), gbc);
@@ -159,7 +151,6 @@ public class Configuracion extends JPanel {
         add(elitismo, gbc);
         y++;
 
-        // Tipo de seleccion
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Tipo de selección:"), gbc);
@@ -177,7 +168,6 @@ public class Configuracion extends JPanel {
         add(seleccion, gbc);
         y++;
 
-        // Tipo de cruce
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Tipo de cruce:"), gbc);
@@ -190,7 +180,6 @@ public class Configuracion extends JPanel {
         add(cruce, gbc);
         y++;
 
-        // Tipo de mutacion
         gbc.gridx = 0;
         gbc.gridy = y;
         add(new JLabel("Tipo de mutación:"), gbc);
@@ -207,7 +196,6 @@ public class Configuracion extends JPanel {
         add(mutacion, gbc);
         y++;
 
-        // Ejecutar
         gbc.gridx = 0;
         gbc.gridy = y;
         gbc.gridwidth = 2;
@@ -217,7 +205,6 @@ public class Configuracion extends JPanel {
         add(ejecutar, gbc);
         y++;
 
-        // Cancelar
         gbc.gridx = 0;
         gbc.gridy = y;
         gbc.gridwidth = 2;
@@ -229,7 +216,7 @@ public class Configuracion extends JPanel {
         add(cancelar, gbc);
         y++;
 
-        // Visualizar mapa (oculto hasta que termine la ejecucion)
+        // oculto hasta que termine la ejecucion
         gbc.gridx = 0;
         gbc.gridy = y;
         gbc.gridwidth = 1;

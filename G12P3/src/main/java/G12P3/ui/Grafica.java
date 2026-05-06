@@ -102,4 +102,27 @@ public class Grafica extends JPanel {
             plot.repaint();
         });
     }
+
+    public void mostrarDatosFinales(double[] arrMejorGen, double[] arrMejorAbs, double[] arrMedia) {
+        min = 0;
+        max = 0;
+        for (int i = 0; i < generaciones; i++) {
+            mejoresPorGeneracion[i][1] = arrMejorGen[i];
+            mejoresAbsolutos[i][1] = arrMejorAbs[i];
+            mediaPorGeneracion[i][1] = arrMedia[i];
+            if (arrMejorAbs[i] > max) max = arrMejorAbs[i];
+            if (arrMedia[i] < min) min = arrMedia[i];
+            if (arrMejorGen[i] < min) min = arrMejorGen[i];
+        }
+
+        plotMejorGen.setData(mejoresPorGeneracion);
+        plotMejorAbs.setData(mejoresAbsolutos);
+        plotMedia.setData(mediaPorGeneracion);
+
+        SwingUtilities.invokeLater(() -> {
+            plot.setFixedBounds(0, 0, Math.max(1, generaciones - 1));
+            if (max > min) plot.setFixedBounds(1, min, max);
+            plot.repaint();
+        });
+    }
 }

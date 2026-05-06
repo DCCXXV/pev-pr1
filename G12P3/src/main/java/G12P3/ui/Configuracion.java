@@ -1,5 +1,6 @@
 package G12P3.ui;
 
+import G12P3.ag.Cromosoma;
 import G12P3.ag.Simulator;
 import G12P3.ag.cruce.Cruce;
 import G12P3.ag.cruce.CruceSubArboles;
@@ -18,7 +19,14 @@ import G12P3.ag.seleccion.Torneo;
 import G12P3.ag.seleccion.Truncamiento;
 import G12P3.evaluacion.MapaLunar;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.*;
 
 public class Configuracion extends JPanel {
@@ -32,6 +40,7 @@ public class Configuracion extends JPanel {
     private JSpinner coefBloat;
     private JSpinner elitismo;
     private JSpinner numMapas;
+    private JSpinner numSimulaciones;
     private JComboBox<String> seleccion;
     private JComboBox<String> cruce;
     private JComboBox<String> mutacion;
@@ -56,6 +65,7 @@ public class Configuracion extends JPanel {
         double coefBloat,
         double elitismo,
         int numMapas,
+        int numSimulaciones,
         String seleccion,
         String cruce,
         String mutacion
@@ -159,6 +169,14 @@ public class Configuracion extends JPanel {
         gbc.gridx = 1;
         this.numMapas = new JSpinner(new SpinnerNumberModel(3, 1, 20, 1));
         add(numMapas, gbc);
+        y++;
+
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        add(new JLabel("Número de simulaciones:"), gbc);
+        gbc.gridx = 1;
+        this.numSimulaciones = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+        add(numSimulaciones, gbc);
         y++;
 
         gbc.gridx = 0;
@@ -290,6 +308,7 @@ public class Configuracion extends JPanel {
             ((Number) coefBloat.getValue()).doubleValue(),
             ((int) elitismo.getValue()) / 100.0,
             (int) numMapas.getValue(),
+            (int) numSimulaciones.getValue(),
             (String) seleccion.getSelectedItem(),
             (String) cruce.getSelectedItem(),
             (String) mutacion.getSelectedItem()
@@ -313,28 +332,84 @@ public class Configuracion extends JPanel {
 
         this.hilo = new Thread(() -> {
             try {
-                Random rnd = new Random(datos.semilla);
-                Seleccion sel = crearSeleccion(rnd, datos.seleccion);
-                Cruce cru = crearCruce(rnd, datos.cruce);
-                Mutacion mut = crearMutacion(rnd, datos.profundidadMax, datos.mutacion);
+                if (datos.numSimulaciones == 1) {
+                    Random rnd = new Random(datos.semilla);
+                    Seleccion sel = crearSeleccion(rnd, datos.seleccion);
+                    Cruce cru = crearCruce(rnd, datos.cruce);
+                    Mutacion mut = crearMutacion(rnd, datos.profundidadMax, datos.mutacion);
+                    new Simulator(
+                        datos.generaciones, datos.poblacion, datos.probCruce,
+                        datos.probMutacion, datos.elitismo, datos.profundidadMax,
+                        datos.coefBloat, datos.semilla, datos.semilla, datos.numMapas,
+                        sel, cru, mut, tablero, grafica, fenotipo
+                    );
+                } else {
+                    double[] sumaMejorGen = new double[datos.generaciones];
+                    double[] sumaMejorAbs = new double[datos.generaciones];
+                    double[] sumaMedia = new double[datos.generaciones];
+                    AtomicInteger simsCompletadas = new AtomicInteger(0);
+                    AtomicReference<Cromosoma> mejorGlobal = new AtomicReference<>(null);
 
-                new Simulator(
-                    datos.generaciones,
-                    datos.poblacion,
-                    datos.probCruce,
-                    datos.probMutacion,
-                    datos.elitismo,
-                    datos.profundidadMax,
-                    datos.coefBloat,
-                    datos.semilla,
-                    datos.numMapas,
-                    sel,
-                    cru,
-                    mut,
-                    tablero,
-                    grafica,
-                    fenotipo
-                );
+                    int numHilos = Math.min(datos.numSimulaciones, Runtime.getRuntime().availableProcessors());
+                    ExecutorService pool = Executors.newFixedThreadPool(numHilos);
+                    List<Future<?>> futures = new ArrayList<>();
+
+                    for (int sim = 0; sim < datos.numSimulaciones; sim++) {
+                        final int simIdx = sim;
+                        futures.add(pool.submit(() -> {
+                            long semillaSim = datos.semilla + simIdx;
+                            Random rnd = new Random(semillaSim);
+                            Seleccion sel = crearSeleccion(rnd, datos.seleccion);
+                            Cruce cru = crearCruce(rnd, datos.cruce);
+                            Mutacion mut = crearMutacion(rnd, datos.profundidadMax, datos.mutacion);
+                            System.out.println("Simulación " + (simIdx + 1) + "/" + datos.numSimulaciones);
+                            Simulator s = new Simulator(
+                                datos.generaciones, datos.poblacion, datos.probCruce,
+                                datos.probMutacion, datos.elitismo, datos.profundidadMax,
+                                datos.coefBloat, semillaSim, datos.semilla, datos.numMapas,
+                                sel, cru, mut, null, null, null
+                            );
+                            synchronized (sumaMejorGen) {
+                                double[] mg = s.getDatosMejorGen();
+                                double[] ma = s.getDatosMejorAbs();
+                                double[] me = s.getDatosMedia();
+                                int completadas = simsCompletadas.incrementAndGet();
+                                for (int g = 0; g < datos.generaciones; g++) {
+                                    sumaMejorGen[g] += mg[g];
+                                    sumaMejorAbs[g] += ma[g];
+                                    sumaMedia[g] += me[g];
+                                }
+                                Cromosoma actual = mejorGlobal.get();
+                                Cromosoma candidato = s.getMejorAbsoluto();
+                                if (actual == null || candidato.fitness > actual.fitness)
+                                    mejorGlobal.set(candidato);
+                                double[] avgMG = new double[datos.generaciones];
+                                double[] avgMA = new double[datos.generaciones];
+                                double[] avgMe = new double[datos.generaciones];
+                                for (int g = 0; g < datos.generaciones; g++) {
+                                    avgMG[g] = sumaMejorGen[g] / completadas;
+                                    avgMA[g] = sumaMejorAbs[g] / completadas;
+                                    avgMe[g] = sumaMedia[g] / completadas;
+                                }
+                                grafica.mostrarDatosFinales(avgMG, avgMA, avgMe);
+                            }
+                        }));
+                    }
+
+                    pool.shutdown();
+                    try {
+                        pool.awaitTermination(Long.MAX_VALUE, java.util.concurrent.TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        pool.shutdownNow();
+                        Thread.currentThread().interrupt();
+                    }
+
+                    Cromosoma mejor = mejorGlobal.get();
+                    if (mejor != null) {
+                        tablero.setMejor(mejor);
+                        fenotipo.setMejor(mejor);
+                    }
+                }
             } finally {
                 SwingUtilities.invokeLater(() -> {
                     estadoComponentes(true);
@@ -357,6 +432,7 @@ public class Configuracion extends JPanel {
         coefBloat.setEnabled(estado);
         elitismo.setEnabled(estado);
         numMapas.setEnabled(estado);
+        numSimulaciones.setEnabled(estado);
         seleccion.setEnabled(estado);
         cruce.setEnabled(estado);
         mutacion.setEnabled(estado);

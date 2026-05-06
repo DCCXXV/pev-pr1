@@ -31,6 +31,16 @@ public class SimulatorGE {
 
     private Cromosoma[] poblacion;
 
+    private double[] datosMejorGen;
+    private double[] datosMejorAbs;
+    private double[] datosMedia;
+    private Cromosoma mejorAbsoluto;
+
+    public double[] getDatosMejorGen() { return datosMejorGen; }
+    public double[] getDatosMejorAbs() { return datosMejorAbs; }
+    public double[] getDatosMedia() { return datosMedia; }
+    public Cromosoma getMejorAbsoluto() { return mejorAbsoluto; }
+
     public SimulatorGE(
         int maxGeneraciones,
         int tamPoblacion,
@@ -41,6 +51,7 @@ public class SimulatorGE {
         int profMaxDecoder,
         double coefBloat,
         long semilla,
+        long semillaMapa,
         int numMapas,
         Seleccion seleccion,
         Cruce cruce,
@@ -59,10 +70,14 @@ public class SimulatorGE {
         this.coefBloat = coefBloat;
         this.rnd = new Random(semilla);
         this.semillasMapas = new long[numMapas];
-        for (int i = 0; i < numMapas; i++) this.semillasMapas[i] = semilla + i;
+        for (int i = 0; i < numMapas; i++) this.semillasMapas[i] = semillaMapa + i;
         this.seleccion = seleccion;
         this.cruce = cruce;
         this.mutacion = mutacion;
+
+        this.datosMejorGen = new double[maxGeneraciones];
+        this.datosMejorAbs = new double[maxGeneraciones];
+        this.datosMedia = new double[maxGeneraciones];
 
         iniciarPoblacion();
         evaluarPoblacion();
@@ -102,13 +117,25 @@ public class SimulatorGE {
             }
 
             double media = suma / tamPoblacion;
-            grafica.actualizarGrafica(gen, mejorGen, mejorFitnessAbs, media);
-            tablero.setMejor(mejorAbs);
-            fenotipo.setMejor(mejorAbs);
+            datosMejorGen[gen] = mejorGen;
+            datosMejorAbs[gen] = mejorFitnessAbs;
+            datosMedia[gen] = media;
+
+            if (grafica != null) {
+                grafica.actualizarGrafica(gen, mejorGen, mejorFitnessAbs, media);
+                tablero.setMejor(mejorAbs);
+                fenotipo.setMejor(mejorAbs);
+            }
             System.out.println(
                 "GE " + gen + " | " + maxGeneraciones + " | " + mejorFitnessAbs +
                     " | nodos=" + mejorAbs.nodos
             );
+        }
+
+        this.mejorAbsoluto = mejorAbs;
+        if (grafica == null && tablero != null) {
+            tablero.setMejor(mejorAbs);
+            fenotipo.setMejor(mejorAbs);
         }
     }
 
